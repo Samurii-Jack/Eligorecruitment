@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eligo Recruitment | Enhancing Careers, Enriching Companies</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0c2d5a;
+            --secondary-color: #d4af37;
+            --royal-blue: #4169E1;
+            --header-blue: #1e344b;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --gray-color: #6c757d;
+            --accent-color: #f5f5f5;
+            --gradient-primary: linear-gradient(135deg, #0c2d5a 0%, #1e344b 100%);
+            --gradient-secondary: linear-gradient(135deg, #d4af37 0%, #f0d264 100%);
+            --gradient-hero: linear-gradient(135deg, rgba(12, 45, 90, 0.9) 0%, rgba(30, 52, 75, 0.8) 100%);
+            --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            overflow-x: hidden;
+            font-weight: 400;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+        
+        /* Navigation */
+        .navbar {
+            background-color: rgba(12, 45, 90, 0.95);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 15px 0;
+            transition: var(--transition);
+            box-shadow: 0 1px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar.scrolled {
+            padding: 10px 0;
+            background-color: rgba(12, 45, 90, 0.98);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .nav-logo {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 24px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-logo i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            font-size: 0.95rem;
+            padding: 5px 0;
+        }
+        
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--secondary-color);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        
+        .nav-toggle span {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+        
+        /* New Header Section (formerly Hero Section) */
+        .header {
+            height: 100vh;
+            min-height: 600px;
+            background-image: url('https://z-cdn-media.chatglm.cn/files/15763963-1329-42c5-996e-125731da543e_uk-black-tech-uZyE3w7khzw-unsplash.jpg?auth_key=1790464609-b51ed62d3d784c438a2cab898a47015b-0-6b96a49a6dc16e990d07144e6d3606fc');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            color: #fff;
+            position: relative;
+            margin-top: 70px;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-hero);
+            z-index: 1;
+        }
+        
+        /* Header Content */
+        .header-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px 0;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header-brand {
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .company-name {
+            font-family: 'Cinzel', serif;
+            font-size: 70px;
+            line-height: 1.1;
+            letter-spacing: 3px;
+            text-shadow: 
+                2px 2px 4px rgba(0, 0, 0, 0.5),
+                0px 0px 10px rgba(212, 175, 55, 0.3),
+                0px 2px 1px rgba(255, 255, 255, 0.2);
+        }
+        
+        .company-name .eligo {
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+        
+        .company-name .recruitment {
+            color: var(--header-blue);
+            font-weight: 400;
+        }
+        
+        .header-tagline {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.5);
+            font-weight: 500;
+            max-width: 800px;
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out 0.5s forwards;
+        }
+        
+        .header-description {
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            max-width: 700px;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out 1s forwards;
+        }
+        
+        .header-buttons {
+            display: flex;
+            gap: 15px;
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out 1.5s forwards;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.5s ease;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            background-color: #b8941f;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+            margin-left: 0;
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            animation: bounce 2s infinite;
+        }
+        
+        .scroll-indicator i {
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+        
+        /* About Section */
+        .about {
+            padding: 100px 0;
+            background-color: #fff;
+            position: relative;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        
+        .section-title h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            position: relative;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--secondary-color);
+        }
+        
+        .section-title p {
+            color: var(--gray-color);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+        
+        .about-content {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 50px;
+        }
+        
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .about-text h3 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 15px;
+        }
+        
+        .about-text h3::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            height: calc(100% - 10px);
+            width: 4px;
+            background-color: var(--secondary-color);
+            border-radius: 2px;
+        }
+        
+        .about-text p {
+            margin-bottom: 20px;
+            color: var(--gray-color);
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+        
+        .about-image img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: var(--shadow-xl);
+            transition: var(--transition);
+        }
+        
+        .about-image:hover img {
+            transform: scale(1.02);
+        }
+        
+        .about-image::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            background-color: var(--secondary-color);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.2;
+        }
+        
+        /* Services Section */
+        .services {
+            padding: 100px 0;
+            background-color: var(--accent-color);
+            position: relative;
+        }
+        
+        .services::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(12,45,90,0.03)" stroke-width="1"/></svg>');
+            z-index: 1;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .service-card {
+            background-color: #fff;
+            border-radius: 15px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient-secondary);
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .service-icon {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+        
+        .service-card:hover .service-icon {
+            transform: scale(1.1);
+        }
+        
+        .service-card h3 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .service-card p {
+            color: var(--gray-color);
+            line-height: 1.6;
+        }
+        
+        /* Process Section */
+        .process {
+            padding: 100px 0;
+            background-color: #fff;
+        }
+        
+        .process-timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .process-timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 100%;
+            background: var(--gradient-secondary);
+        }
+        
+        .process-item {
+            position: relative;
+            margin-bottom: 50px;
+            width: 50%;
+        }
+        
+        .process-item:nth-child(odd) {
+            left: 0;
+            padding-right: 50px;
+            text-align: right;
+        }
+        
+        .process-item:nth-child(even) {
+            left: 50%;
+            padding-left: 50px;
+        }
+        
+        .process-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            border: 4px solid #fff;
+            box-shadow: 0 0 0 3px var(--primary-color);
+        }
+        
+        .process-item:nth-child(odd)::before {
+            right: -10px;
+        }
+        
+        .process-item:nth-child(even)::before {
+            left: -10px;
+        }
+        
+        .process-content {
+            background-color: var(--accent-color);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+        
+        .process-content:hover {
+            transform: scale(1.02);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .process-content h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        
+        .process-item:nth-child(even) .process-content h3 {
+            justify-content: flex-start;
+        }
+        
+        .process-content h3 i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .process-item:nth-child(even) .process-content h3 i {
+            margin-right: 0;
+            margin-left: 10px;
+        }
+        
+        .process-content p {
+            color: var(--gray-color);
+            line-height: 1.6;
+        }
+        
+        /* Clients Section */
+        .clients {
+            padding: 100px 0;
+            background-color: #fff;
+        }
+        
+        .clients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        
+        .client-card {
+            background-color: var(--accent-color);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .client-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 100%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .client-card:hover::before {
+            opacity: 1;
+        }
+        
+        .client-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .client-card img {
+            max-width: 100%;
+            max-height: 100px;
+            object-fit: contain;
+            transition: var(--transition);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .client-card:hover img {
+            transform: scale(1.05);
+        }
+        
+        /* Contact Section */
+        .contact {
+            padding: 100px 0;
+            background: var(--gradient-primary);
+            color: white;
+            position: relative;
+        }
+        
+        .contact::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><path d="M0,0 L100,100 M100,0 L0,100" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></svg>');
+            z-index: 1;
+        }
+        
+        .contact .section-title h2 {
+            color: white;
+        }
+        
+        .contact .section-title p {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .contact-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .contact-form {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: var(--transition);
+        }
+        
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        
+        .contact-info {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .contact-info h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .contact-info p {
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+        
+        .contact-item:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+        
+        .contact-item i {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-right: 15px;
+            width: 30px;
+        }
+        
+        .contact-item span {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 50px 0 20px;
+            position: relative;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient-secondary);
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        
+        .footer-logo {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-logo img {
+            height: 50px;
+            margin-bottom: 15px;
+        }
+        
+        .footer-logo p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+        }
+        
+        .footer-logo h3 {
+            font-family: 'Cinzel Decorative', serif;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+        }
+        
+        .footer-links {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-links h4 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-links h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--secondary-color);
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-block;
+            position: relative;
+        }
+        
+        .footer-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: var(--secondary-color);
+            transition: width 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .footer-links a:hover::after {
+            width: 100%;
+        }
+        
+        .footer-social {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 30px;
+        }
+        
+        .social-icons {
+            display: flex;
+            margin-top: 20px;
+        }
+        
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            margin-right: 10px;
+            color: #fff;
+            transition: var(--transition);
+        }
+        
+        .social-icons a:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .header-brand .company-name {
+                font-size: 56px;
+            }
+            
+            .header-tagline {
+                font-size: 18px;
+            }
+            
+            .header-description {
+                font-size: 1rem;
+            }
+            
+            .process-timeline::before {
+                left: 30px;
+            }
+            
+            .process-item {
+                width: 100%;
+                padding-left: 70px !important;
+                padding-right: 0 !important;
+                text-align: left !important;
+            }
+            
+            .process-item::before {
+                left: 20px !important;
+            }
+            
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                flex-direction: column;
+                background-color: var(--primary-color);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+                padding: 20px 0;
+            }
+            
+            .nav-menu.active {
+                left: 0;
+            }
+            
+            .nav-toggle {
+                display: flex;
+            }
+            
+            .nav-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+            
+            .nav-toggle.active span:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+            
+            .nav-toggle.active span:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                height: 100vh;
+                margin-top: 60px;
+            }
+            
+            .header-content {
+                padding: 40px 0;
+            }
+            
+            .header-brand .company-name {
+                font-size: 42px;
+                letter-spacing: 2px;
+            }
+            
+            .header-tagline {
+                font-size: 16px;
+            }
+            
+            .header-description {
+                font-size: 0.9rem;
+            }
+            
+            .header-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-outline {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+            
+            .about-content,
+            .contact-content {
+                flex-direction: column;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <div class="nav-container">
+            <a href="#" class="nav-logo"><i class="fas fa-briefcase"></i> Eligo Recruitment</a>
+            <ul class="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#process">Process</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="nav-toggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section (formerly Hero Section) -->
+    <header id="home" class="header" role="banner">
+        <div class="header-content">
+            <div class="header-brand">
+                <div class="company-name">
+                    <span class="eligo">ELIGO</span>
+                    <span class="recruitment">RECRUITMENT</span>
+                </div>
+            </div>
+            <div class="header-tagline">ENHANCING CAREERS, ENRICHING COMPANIES</div>
+            <p class="header-description">We are a Recruitment Agency aimed at changing the perspective around job seeking and hiring troubles. We believe the right job can transform a person and the right person can transform a business.</p>
+            <div class="header-buttons">
+                <a href="#contact" class="btn">Contact Us</a>
+                <a href="#services" class="btn btn-outline">Our Services</a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </header>
+
+    <!-- About Section -->
+    <section id="about" class="about" aria-labelledby="about-heading">
+        <div class="container">
+            <div class="section-title">
+                <h2 id="about-heading">About Us</h2>
+                <p>Learn more about Eligo Recruitment and our mission to transform the recruitment industry.</p>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Who We Are</h3>
+                    <p>Eligo Recruitment initially started as a candidate placement agency and as the years went by, we realized clients approaching us to help them fill various roles which has now become our core operations.</p>
+                    <p>We aim at ensuring both parties are content i.e. client and candidate. We match candidates with organizations where we feel they will grow as individuals and help the company grow as well.</p>
+                    <p>We have been in the industry for about 5 years now and have done successful placements having worked with numerous clients within the private and public sector.</p>
+                    <a href="#contact" class="btn">Get In Touch</a>
+                </div>
+                <div class="about-image">
+                    <img src="https://z-cdn-media.chatglm.cn/files/45da7ead-85e2-42ee-b67f-57659db7ac28_man-handshaking-his-employer-after-being-accepted-his-new-office-job.jpg?auth_key=1790464609-bfae6265e38844a395f0307590ad5ecd-0-8bf0e4db9db06465c8c67f5f13f7f56c" alt="Business Handshake">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services" aria-labelledby="services-heading">
+        <div class="container">
+            <div class="section-title">
+                <h2 id="services-heading">Our Services</h2>
+                <p>We offer comprehensive recruitment solutions tailored to meet your specific needs.</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>Executive Search</h3>
+                    <p>We conduct thorough searches to identify and attract top-tier executives who align with your company's vision and culture.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Talent Acquisition</h3>
+                    <p>Our team specializes in finding and placing qualified candidates across various industries and job functions.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <h3>Background Screening</h3>
+                    <p>We perform comprehensive background checks and reference verification to ensure the credibility of potential candidates.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3>Offer Negotiation</h3>
+                    <p>We assist in negotiating competitive offers that satisfy both the candidate and the client, ensuring successful placements.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Market Mapping</h3>
+                    <p>We identify potential industries and organizations where suitable candidates may be found to enable direct sourcing.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h3>Consulting</h3>
+                    <p>We provide expert advice on recruitment strategies, talent management, and organizational development.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section id="process" class="process" aria-labelledby="process-heading">
+        <div class="container">
+            <div class="section-title">
+                <h2 id="process-heading">Our Process</h2>
+                <p>Our structured approach ensures we find the right talent for your organization.</p>
+            </div>
+            <div class="process-timeline">
+                <div class="process-item">
+                    <div class="process-content">
+                        <h3><i class="fas fa-compass"></i> Discovery</h3>
+                        <p>We begin by understanding your company culture, values, and specific requirements for the role.</p>
+                    </div>
+                </div>
+                <div class="process-item">
+                    <div class="process-content">
+                        <h3><i class="fas fa-chess"></i> Strategy</h3>
+                        <p>We develop a tailored recruitment strategy based on your needs and market conditions.</p>
+                    </div>
+                </div>
+                <div class="process-item">
+                    <div class="process-content">
+                        <h3><i class="fas fa-network-wired"></i> Sourcing</h3>
+                        <p>Our team actively sources and screens potential candidates through various channels.</p>
+                    </div>
+                </div>
+                <div class="process-item">
+                    <div class="process-content">
+                        <h3><i class="fas fa-clipboard-check"></i> Selection</h3>
+                        <p>We present you with a shortlist of qualified candidates and facilitate interviews.</p>
+                    </div>
+                </div>
+                <div class="process-item">
+                    <div class="process-content">
+                        <h3><i class="fas fa-file-contract"></i> Placement</h3>
+                        <p>We assist with offer negotiation and ensure a smooth onboarding process.</p>
+                    </div>
+                </div>
+                <div class="process-item">
+                    <div class="process-content">
+                        <h3><i class="fas fa-comments"></i> Follow-up</h3>
+                        <p>We maintain contact to ensure satisfaction and address any post-placement needs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Clients Section -->
+    <section class="clients" aria-labelledby="clients-heading">
+        <div class="container">
+            <div class="section-title">
+                <h2 id="clients-heading">Our Clients</h2>
+                <p>We've had the privilege of working with industry-leading companies.</p>
+            </div>
+            <div class="clients-grid">
+                <div class="client-card">
+                    <img src="https://z-cdn-media.chatglm.cn/files/7e7eb499-3fae-45ad-9349-f99ea8f8219f_Apptivate%29.jpg?auth_key=1790473452-c27b03f5c3bc403aa048f5de68444309-0-e2a4cabcdcfb555b6d8af0562f6ae807" alt="Apptivate.Africa">
+                </div>
+                <div class="client-card">
+                    <img src="https://z-cdn-media.chatglm.cn/files/483fe4e8-7f8d-4531-99e1-0a4daa24adba_haulers.jpeg?auth_key=1790473452-9367fe646339479cbcad0dc8dfb4c916-0-e1c13d7439fb6726edc23a268a70a708" alt="Multiple Hauliers">
+                </div>
+                <div class="client-card">
+                    <img src="https://z-cdn-media.chatglm.cn/files/4929552c-9a1f-4688-9b38-866d2236457d_impala%20glass.jpg?auth_key=1790473452-f353df8db3224a688d57dd2e21ff000b-0-d186a6b73e132ce837ecbd3b644ca474" alt="Impala Glass">
+                </div>
+                <div class="client-card">
+                    <img src="https://z-cdn-media.chatglm.cn/files/e5808b00-7e8f-467c-b892-9f1d22aa92be_maxider.jpg?auth_key=1790473452-21ad85212e684208ba6c3c81472f7c09-0-9f54cfdc69d0cddabaf7a313f29f0719" alt="Maxider">
+                </div>
+                <div class="client-card">
+                    <img src="https://z-cdn-media.chatglm.cn/files/7c571e0c-47e7-4620-9b31-ba14ba61a544_ramsas.%20%28Website%29.jpg?auth_key=1790473452-58049dbffa0f47348e87b119258a525-0-8dfee0e7e01c8b3e124593157fb399fe" alt="RAMSA">
+                </div>
+                <div class="client-card">
+                    <img src="https://z-cdn-media.chatglm.cn/files/bc2f4670-a9c9-4f11-9df3-98455d8609dc_Tech%20ASS.jpg?auth_key=1790473452-1b63a942966048569bb89bc9cbdce4a1-0-23699060119537fb4e4781f5a8fad503" alt="Technology Associates">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact" aria-labelledby="contact-heading">
+        <div class="container">
+            <div class="section-title">
+                <h2 id="contact-heading">Get In Touch</h2>
+                <p>We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+            </div>
+            <div class="contact-content">
+                <form class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" required placeholder="Your Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required placeholder="Your Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" required placeholder="Your Message"></textarea>
+                    </div>
+                    <button type="submit" class="btn">Send Message</button>
+                </form>
+                <div class="contact-info">
+                    <h3>Contact Information</h3>
+                    <p>Reach out to us through any of the following channels. Our team is ready to assist you.</p>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>+254 714 139 371</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>info@eligorecruitment.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Monday - Friday: 9:00 AM - 6:00 PM</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Nairobi, Kenya</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>Eligo Recruitment</h3>
+                    <p>Enhancing Careers, Enriching Companies.</p>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#process">Our Process</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#">Executive Search</a></li>
+                        <li><a href="#">Talent Acquisition</a></li>
+                        <li><a href="#">Background Screening</a></li>
+                        <li><a href="#">Market Mapping</a></li>
+                        <li><a href="#">Consulting</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                        <li><a href="#">Accessibility</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Eligo Recruitment. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Navigation Toggle
+        const navToggle = document.querySelector('.nav-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+        const navbar = document.querySelector('.navbar');
+
+        navToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            navToggle.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                navToggle.classList.remove('active');
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Form submission handler
+        document.querySelector('.contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            
+            // Here you would normally send the data to a server
+            // For this example, we'll just show a success message
+            const formContainer = document.querySelector('.contact-form');
+            formContainer.innerHTML = `
+                <div style="background-color: rgba(255, 255, 255, 0.2); padding: 20px; border-radius: 10px; text-align: center;">
+                    <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--secondary-color); margin-bottom: 15px;"></i>
+                    <h3 style="color: white; margin-bottom: 10px;">Thank You!</h3>
+                    <p style="color: rgba(255, 255, 255, 0.9);">Your message has been sent successfully. We'll get back to you soon.</p>
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>
