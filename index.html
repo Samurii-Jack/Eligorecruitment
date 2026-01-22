@@ -126,6 +126,22 @@
 .client-card:hover img {
     transform: scale(1.05); /* Subtle zoom instead of color change */
 }
+        .client-card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.client-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
 
         
         .contact { background: linear-gradient(135deg, #0c2d5a 0%, #1e344b 100%); color: white; }
