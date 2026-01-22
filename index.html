@@ -351,24 +351,45 @@
         <div class="container">
             <div class="section-title">
                 <h2>Get In Touch</h2>
-                <p>We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+                <p>We'd love to hear from you. Could you send us a message? We'll respond as soon as possible. </p>
             </div>
             <div class="contact-content">
-                <form class="contact-form">
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" id="name" name="name" required placeholder="Your Name">
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required placeholder="Your Email">
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message</label>
-                        <textarea id="message" name="message" required placeholder="Your Message"></textarea>
-                    </div>
-                    <button type="submit" class="btn">Send Message</button>
-                </form>
+                <form class="contact-form" action="https://api.web3forms.com/submit" method="POST" id="contactForm">
+
+    <!-- Web3Forms Access Key (a5314a4a-a01b-4127-98eb-883ea3cdf096) -->
+    <input type="hidden" name="access_key" value="PASTE_YOUR_ACCESS_KEY_HERE">
+
+    <!-- Email recipient -->
+    <input type="hidden" name="email" value="info@eligorecruitment.co.ke">
+
+    <!-- Form settings -->
+    <input type="hidden" name="subject" value="New Contact Form Submission - Eligo Recruitment">
+    <input type="hidden" name="from_name" value="Eligo Recruitment Website">
+
+    <!-- Honeypot Spam Protection -->
+    <input type="checkbox" name="botcheck" class="hidden" style="display:none;">
+
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required placeholder="Your Name">
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required placeholder="Your Email">
+    </div>
+
+    <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" required placeholder="Your Message"></textarea>
+    </div>
+
+    <button type="submit" class="btn">Send Message</button>
+
+    <!-- Status Message -->
+    <p id="formStatus" style="margin-top:15px; font-weight:500;"></p>
+</form>
+
                 <div class="contact-info">
                     <h3>Contact Information</h3>
                     <p>Reach out to us through any of the following channels. Our team is ready to assist you.</p>
@@ -476,17 +497,41 @@
             });
         });
 
-        document.querySelector('.contact-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formContainer = document.querySelector('.contact-form');
-            formContainer.innerHTML = `
-                <div style="background-color: rgba(255, 255, 255, 0.2); padding: 20px; border-radius: 10px; text-align: center;">
-                    <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--secondary-color); margin-bottom: 15px;"></i>
-                    <h3 style="color: white; margin-bottom: 10px;">Thank You!</h3>
-                    <p style="color: rgba(255, 255, 255, 0.9);">Your message has been sent successfully. We'll get back to you soon.</p>
-                </div>
-            `;
+       <script>
+const form = document.getElementById("contactForm");
+const status = document.getElementById("formStatus");
+
+form.addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    status.style.color = "#d4af37";
+    status.innerHTML = "Sending message...";
+
+    const formData = new FormData(form);
+
+    try {
+        const response = await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            body: formData
         });
+
+        const result = await response.json();
+
+        if (result.success) {
+            status.style.color = "#00ff99";
+            status.innerHTML = "✅ Message sent successfully! We'll get back to you soon.";
+            form.reset();
+        } else {
+            status.style.color = "red";
+            status.innerHTML = "❌ Something went wrong. Please try again.";
+        }
+    } catch (error) {
+        status.style.color = "red";
+        status.innerHTML = "❌ Network error. Please try again later.";
+    }
+});
+</script>
+
     </script>
 </body>
 </html>
