@@ -230,6 +230,133 @@
             width: 100%;
         }
 
+        /* ============================================
+           DROPDOWN MENU STYLES - JOBS DROPDOWN
+           ============================================ */
+
+        /* Dropdown container */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        /* Dropdown trigger button - matches existing nav links */
+        .dropdown-trigger {
+            font-family: var(--font-heading);
+            font-size: clamp(0.875rem, 1vw, 0.9375rem);
+            font-weight: 600;
+            color: var(--primary-navy);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            position: relative;
+            transition: color var(--transition-base);
+        }
+
+        .dropdown-trigger:hover {
+            color: var(--accent-gold);
+        }
+
+        /* Chevron icon */
+        .dropdown-trigger .chevron {
+            font-size: 0.75rem;
+            transition: transform var(--transition-base);
+        }
+
+        /* Rotate chevron when dropdown is open */
+        .nav-dropdown.active .dropdown-trigger .chevron,
+        .nav-dropdown:hover .dropdown-trigger .chevron {
+            transform: rotate(180deg);
+        }
+
+        /* Underline effect on hover - matches existing nav links */
+        .dropdown-trigger::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-gold);
+            transition: width var(--transition-base);
+        }
+
+        .dropdown-trigger:hover::after {
+            width: calc(100% - 1rem);
+        }
+
+        /* Dropdown menu container */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 0.5rem;
+            background-color: var(--bg-white);
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+            min-width: 200px;
+            padding: 0.5rem 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: opacity var(--transition-base),
+                        transform var(--transition-base),
+                        visibility var(--transition-base);
+            z-index: 1001;
+        }
+
+        /* Desktop: Show dropdown on hover */
+        @media (min-width: 993px) {
+            .nav-dropdown:hover .dropdown-menu {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile: Show dropdown when active class is present */
+        .nav-dropdown.active .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Dropdown menu items */
+        .dropdown-menu a {
+            display: block;
+            padding: 0.75rem 1.25rem;
+            color: var(--text-dark);
+            font-size: 0.9375rem;
+            font-weight: 500;
+            transition: background-color var(--transition-fast), color var(--transition-fast);
+            white-space: nowrap;
+        }
+
+        /* Remove the ::after underline from dropdown items */
+        .dropdown-menu a::after {
+            display: none;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: var(--bg-gray-50);
+            color: var(--accent-gold);
+        }
+
+        /* Focus styles for accessibility */
+        .dropdown-trigger:focus {
+            outline: 2px solid var(--accent-gold);
+            outline-offset: 2px;
+        }
+
+        .dropdown-menu a:focus {
+            outline: 2px solid var(--accent-gold);
+            outline-offset: -2px;
+            background-color: var(--bg-gray-50);
+        }
+
         .nav-toggle {
             display: none;
             flex-direction: column;
@@ -1124,6 +1251,28 @@
                 color: var(--primary-navy);
             }
 
+            /* Mobile: Dropdown styles */
+            .nav-dropdown .dropdown-trigger {
+                width: 100%;
+                justify-content: space-between;
+                padding: 0;
+            }
+
+            /* Mobile: Position dropdown below trigger within mobile menu */
+            .nav-dropdown .dropdown-menu {
+                position: static;
+                margin-top: 0.75rem;
+                box-shadow: none;
+                background-color: var(--bg-gray-50);
+                border-left: 3px solid var(--accent-gold);
+                border-radius: 4px;
+            }
+
+            .nav-dropdown .dropdown-menu a {
+                padding: 0.625rem 1rem;
+                font-size: 0.875rem;
+            }
+
             .nav-toggle {
                 display: flex;
             }
@@ -1208,6 +1357,23 @@
                 <li><a href="#about">About</a></li>
                 <li><a href="#services">Services</a></li>
                 <li><a href="#process">Process</a></li>
+
+                <!-- Jobs Dropdown Menu -->
+                <li class="nav-dropdown">
+                    <button
+                        class="dropdown-trigger"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        aria-label="Jobs menu">
+                        Jobs
+                        <i class="fas fa-chevron-down chevron"></i>
+                    </button>
+                    <div class="dropdown-menu" role="menu">
+                        <a href="#list-job" role="menuitem">List a Job</a>
+                        <a href="#apply-job" role="menuitem">Apply for a Job</a>
+                    </div>
+                </li>
+
                 <li><a href="#contact">Contact</a></li>
             </ul>
             <div class="nav-toggle">
@@ -1731,6 +1897,91 @@
             link.addEventListener('click', () => {
                 navMenu.classList.remove('active');
                 navToggle.classList.remove('active');
+            });
+        });
+
+        // ========================================
+        // DROPDOWN MENU FUNCTIONALITY
+        // ========================================
+        const dropdownTrigger = document.querySelector('.dropdown-trigger');
+        const navDropdown = document.querySelector('.nav-dropdown');
+
+        // Mobile: Toggle dropdown on click
+        if (dropdownTrigger) {
+            dropdownTrigger.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Toggle active class
+                navDropdown.classList.toggle('active');
+
+                // Update aria-expanded
+                const isExpanded = navDropdown.classList.contains('active');
+                dropdownTrigger.setAttribute('aria-expanded', isExpanded);
+            });
+        }
+
+        // Close dropdown when clicking dropdown menu items
+        document.querySelectorAll('.dropdown-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navDropdown.classList.remove('active');
+                dropdownTrigger.setAttribute('aria-expanded', 'false');
+
+                // Also close mobile menu
+                navMenu.classList.remove('active');
+                navToggle.classList.remove('active');
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (navDropdown && !navDropdown.contains(e.target)) {
+                navDropdown.classList.remove('active');
+                if (dropdownTrigger) {
+                    dropdownTrigger.setAttribute('aria-expanded', 'false');
+                }
+            }
+        });
+
+        // ========================================
+        // KEYBOARD ACCESSIBILITY FOR DROPDOWN
+        // ========================================
+        if (dropdownTrigger) {
+            // Handle Enter and Space keys on dropdown trigger
+            dropdownTrigger.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    navDropdown.classList.toggle('active');
+                    const isExpanded = navDropdown.classList.contains('active');
+                    dropdownTrigger.setAttribute('aria-expanded', isExpanded);
+                }
+
+                // Escape key closes dropdown
+                if (e.key === 'Escape') {
+                    navDropdown.classList.remove('active');
+                    dropdownTrigger.setAttribute('aria-expanded', 'false');
+                    dropdownTrigger.focus();
+                }
+            });
+        }
+
+        // Handle keyboard navigation within dropdown menu
+        const dropdownLinks = document.querySelectorAll('.dropdown-menu a');
+        dropdownLinks.forEach((link, index) => {
+            link.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    const nextLink = dropdownLinks[index + 1] || dropdownLinks[0];
+                    nextLink.focus();
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    const prevLink = dropdownLinks[index - 1] || dropdownLinks[dropdownLinks.length - 1];
+                    prevLink.focus();
+                } else if (e.key === 'Escape') {
+                    navDropdown.classList.remove('active');
+                    dropdownTrigger.setAttribute('aria-expanded', 'false');
+                    dropdownTrigger.focus();
+                }
             });
         });
 
