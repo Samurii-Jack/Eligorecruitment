@@ -1344,6 +1344,130 @@
             background-color: var(--accent-gold-dark);
             transform: translateY(-3px);
         }
+
+        /* ====================
+           MODAL CSS ADDITIONS
+           ==================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0; 
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 37, 64, 0.9); /* var(--primary-navy) with opacity */
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition-base), visibility var(--transition-base);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-container {
+            background-color: var(--bg-white);
+            width: 100%;
+            height: 100%; /* Full screen on mobile */
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            padding: var(--container-padding);
+        }
+
+        @media (min-width: 768px) {
+            .modal-container {
+                width: 90%;
+                max-width: 800px;
+                height: auto;
+                max-height: 90vh;
+                border-radius: 12px;
+                box-shadow: var(--shadow-2xl);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: color var(--transition-fast);
+            z-index: 10;
+        }
+
+        .modal-close:hover {
+            color: var(--error-red);
+        }
+
+        .modal-header { margin-bottom: 2rem; text-align: center; border-bottom: 1px solid var(--border-gray); padding-bottom: 1.5rem; }
+        .modal-header h2 { font-size: 1.75rem; margin-bottom: 0.5rem; color: var(--primary-navy); }
+        .modal-header p { color: var(--text-gray); }
+
+        /* Job Specific Styles */
+        .job-form-section { margin-bottom: 2rem; border-bottom: 1px solid var(--border-gray); padding-bottom: 2rem; }
+        .job-form-section:last-child { border-bottom: none; }
+        .job-section-title { font-size: 1.25rem; color: var(--primary-navy); margin-bottom: 1rem; border-left: 4px solid var(--accent-gold); padding-left: 1rem; }
+
+        .job-grid { display: grid; gap: 1.5rem; }
+        @media (min-width: 640px) { .job-grid { grid-template-columns: 1fr 1fr; } .full-width { grid-column: span 2; } }
+
+        .job-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--primary-navy); font-size: 0.9rem; }
+        .job-input, .job-select, .job-textarea {
+            width: 100%; padding: 0.875rem; border: 1px solid var(--border-gray); border-radius: 8px;
+            font-family: var(--font-body); font-size: 1rem; background-color: var(--bg-gray-50);
+            transition: border-color var(--transition-base);
+        }
+        .job-input:focus, .job-select:focus, .job-textarea:focus { outline: none; border-color: var(--accent-gold); background-color: white; }
+
+        /* File Upload */
+        .file-drop-area {
+            border: 2px dashed var(--border-gray); border-radius: 8px; padding: 2rem;
+            text-align: center; cursor: pointer; background-color: var(--bg-gray-50);
+            transition: all var(--transition-base);
+        }
+        .file-drop-area:hover, .file-drop-area.drag-active { border-color: var(--accent-gold); background-color: rgba(201, 168, 96, 0.05); }
+        .file-drop-area i { font-size: 2rem; color: var(--text-light); margin-bottom: 0.5rem; }
+        .file-name { margin-top: 0.5rem; font-weight: 600; color: var(--primary-navy); font-size: 0.9rem; }
+
+        /* Job Cards & Listings */
+        .job-filters { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .search-box { flex: 1; position: relative; }
+        .search-box i { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-light); }
+        .search-input { width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border-radius: 50px; border: 1px solid var(--border-gray); }
+        .filter-select { padding: 0.75rem 2rem 0.75rem 1.5rem; border-radius: 50px; border: 1px solid var(--border-gray); cursor: pointer; }
+
+        .job-card {
+            background: white; border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.5rem;
+            margin-bottom: 1rem; cursor: pointer; transition: all var(--transition-base);
+        }
+        .job-card:hover { border-color: var(--accent-gold); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+        .job-card-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem; }
+        .job-tag { background: var(--bg-gray-100); color: var(--text-gray); padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600; }
+        .job-meta { display: flex; gap: 1rem; font-size: 0.875rem; color: var(--text-gray); margin-top: 0.5rem; }
+        .job-meta i { color: var(--accent-gold); margin-right: 0.25rem; }
+
+        /* Views */
+        .modal-view { display: none; animation: fadeIn 0.3s ease-out; }
+        .modal-view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .back-btn { background: none; border: none; color: var(--text-gray); cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; }
+        .back-btn:hover { color: var(--primary-navy); }
+
+        .job-actions { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem; border-top: 1px solid var(--border-gray); padding-top: 1.5rem; }
+        
+        .status-msg { margin-top: 1rem; padding: 1rem; border-radius: 8px; display: none; text-align: center; }
+        .status-msg.error { background-color: #fef2f2; color: var(--error-red); display: block; }
     </style>
 </head>
 <body>
@@ -1369,8 +1493,9 @@
                         <i class="fas fa-chevron-down chevron"></i>
                     </button>
                     <div class="dropdown-menu" role="menu">
-                        <a href="#list-job" role="menuitem">List a Job</a>
-                        <a href="#apply-job" role="menuitem">Apply for a Job</a>
+                        <!-- Added IDs here for JS hooks -->
+                        <a href="#list-job" id="nav-list-job" role="menuitem">List a Job</a>
+                        <a href="#apply-job" id="nav-apply-job" role="menuitem">Apply for a Job</a>
                     </div>
                 </li>
 
@@ -1400,7 +1525,8 @@
             <p class="hero-tagline">ENHANCING CAREERS, ENRICHING COMPANIES</p>
             <p>We're a recruitment agency redefining the hiring experience. We believe the right job transforms a person, and the right person transforms a business. Let us connect you with opportunities that matter.</p>
             <div class="hero-buttons">
-                <a href="#contact" class="btn btn-primary">Get Started <i class="fas fa-arrow-right"></i></a>
+                <!-- Added ID for apply modal trigger -->
+                <a href="#apply-job" id="hero-cta-apply" class="btn btn-primary">Browse Jobs <i class="fas fa-arrow-right"></i></a>
                 <a href="#services" class="btn btn-secondary">Our Services</a>
             </div>
             <div class="hero-stats">
@@ -1882,7 +2008,528 @@
         <i class="fas fa-arrow-up"></i>
     </div>
 
+    <!-- =========================
+         MODALS (ADDED)
+         ========================= -->
+
+    <!-- 1. LIST A JOB MODAL -->
+    <div id="modal-list-job" class="modal-overlay" aria-hidden="true" role="dialog">
+        <div class="modal-container">
+            <button class="modal-close modal-close-btn">&times;</button>
+            <div class="modal-header">
+                <h2>Post a Vacancy</h2>
+                <p>Reach thousands of qualified candidates today.</p>
+            </div>
+            
+            <form id="form-list-job">
+                <!-- Web3Forms Hidden Fields -->
+                <input type="hidden" name="access_key" value="a5314a4a-a01b-4127-98eb-883ea3cdf096"> 
+                <input type="hidden" name="subject" value="New Job Listing">
+
+                <div class="job-form-section">
+                    <h3 class="job-section-title">Company Info</h3>
+                    <div class="job-grid">
+                        <div class="job-group">
+                            <label>Company Name *</label>
+                            <input type="text" name="company" required class="job-input">
+                        </div>
+                        <div class="job-group">
+                            <label>Industry</label>
+                            <select name="industry" class="job-select">
+                                <option value="">Select...</option>
+                                <option>Technology</option>
+                                <option>Finance</option>
+                                <option>Healthcare</option>
+                                <option>Logistics</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="job-form-section">
+                    <h3 class="job-section-title">Job Details</h3>
+                    <div class="job-grid">
+                        <div class="job-group">
+                            <label>Job Title *</label>
+                            <input type="text" name="title" required class="job-input">
+                        </div>
+                        <div class="job-group">
+                            <label>Type *</label>
+                            <select name="type" class="job-select">
+                                <option>Full-time</option>
+                                <option>Part-time</option>
+                                <option>Contract</option>
+                            </select>
+                        </div>
+                        <div class="job-group">
+                            <label>Location</label>
+                            <select name="location" class="job-select">
+                                <option>Remote</option>
+                                <option>On-site</option>
+                                <option>Hybrid</option>
+                            </select>
+                        </div>
+                        <div class="job-group">
+                            <label>Deadline</label>
+                            <input type="date" name="deadline" required class="job-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="job-form-section">
+                    <h3 class="job-section-title">Description</h3>
+                    <div class="job-group" style="margin-bottom: 1rem;">
+                        <label>Overview</label>
+                        <textarea name="overview" rows="3" class="job-textarea"></textarea>
+                    </div>
+                    <div class="job-group">
+                        <label>Responsibilities</label>
+                        <textarea name="responsibilities" rows="3" class="job-textarea"></textarea>
+                    </div>
+                </div>
+
+                <div class="job-form-section">
+                    <h3 class="job-section-title">Contact (Private)</h3>
+                    <div class="job-grid">
+                        <div class="job-group">
+                            <label>Email *</label>
+                            <input type="email" name="email" required class="job-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="job-actions">
+                    <button type="button" class="btn btn-secondary modal-close-btn" style="color: var(--text-dark); border-color: var(--border-gray);">Cancel</button>
+                    <button type="submit" class="btn btn-primary">List Job</button>
+                </div>
+                <div class="status-msg"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. APPLY FOR A JOB MODAL -->
+    <div id="modal-apply-job" class="modal-overlay" aria-hidden="true" role="dialog">
+        <div class="modal-container">
+            <button class="modal-close modal-close-btn">&times;</button>
+            
+            <!-- View A: Job Listings -->
+            <div id="view-listings" class="modal-view active">
+                <div class="modal-header">
+                    <h2>Current Opportunities</h2>
+                    <p>Find a role that fits your expertise.</p>
+                </div>
+                
+                <div class="job-filters">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="job-search" placeholder="Search title or company..." class="search-input">
+                    </div>
+                    <select id="job-filter-type" class="filter-select">
+                        <option value="all">All Types</option>
+                        <option value="Full-time">Full-time</option>
+                        <option value="Contract">Contract</option>
+                        <option value="Remote">Remote</option>
+                    </select>
+                </div>
+
+                <div id="listings-container">
+                    <!-- JS will inject job cards here -->
+                </div>
+            </div>
+
+            <!-- View B: Job Details -->
+            <div id="view-details" class="modal-view">
+                <button class="back-btn" onclick="app.switchView('view-listings')"><i class="fas fa-arrow-left"></i> Back to Jobs</button>
+                <div id="job-detail-content">
+                    <!-- JS will inject details here -->
+                </div>
+            </div>
+
+            <!-- View C: Application Form -->
+            <div id="view-application" class="modal-view">
+                <button class="back-btn" onclick="app.switchView('view-details')"><i class="fas fa-arrow-left"></i> Back to Role</button>
+                <div class="modal-header">
+                    <h2>Apply Now</h2>
+                    <p id="apply-role-title" style="color: var(--accent-gold); font-weight: 600;">Job Title</p>
+                </div>
+
+                <form id="form-application">
+                    <input type="hidden" name="job_id" id="app-job-id">
+                    <input type="hidden" name="access_key" value="a5314a4a-a01b-4127-98eb-883ea3cdf096">
+                    <input type="hidden" name="subject" value="New Job Application">
+
+                    <div class="job-grid">
+                        <div class="job-group">
+                            <label>Full Name *</label>
+                            <input type="text" name="fullname" required class="job-input">
+                        </div>
+                        <div class="job-group">
+                            <label>Email *</label>
+                            <input type="email" name="email" required class="job-input">
+                        </div>
+                        <div class="job-group full-width">
+                            <label>Phone</label>
+                            <input type="tel" name="phone" class="job-input">
+                        </div>
+                    </div>
+
+                    <div class="job-group" style="margin-top: 1.5rem;">
+                        <label>Resume / CV (PDF) *</label>
+                        <div class="file-drop-area" id="drop-cv">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drag & drop or click to upload</p>
+                            <input type="file" name="cv" accept=".pdf,.doc,.docx" hidden required>
+                            <div class="file-name"></div>
+                        </div>
+                    </div>
+
+                    <div class="job-group" style="margin-top: 1rem;">
+                        <label>Cover Letter (Optional)</label>
+                        <div class="file-drop-area" id="drop-cl">
+                            <i class="fas fa-file-alt"></i>
+                            <p>Drag & drop or click to upload</p>
+                            <input type="file" name="cover_letter" accept=".pdf,.doc,.docx" hidden>
+                            <div class="file-name"></div>
+                        </div>
+                    </div>
+
+                    <div class="job-actions">
+                        <button type="submit" class="btn btn-primary">Submit Application</button>
+                    </div>
+                    <div class="status-msg"></div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="modal-success" class="modal-overlay">
+        <div class="modal-container" style="max-width: 400px; text-align: center; height: auto;">
+            <div style="width: 60px; height: 60px; background: var(--success-green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 1.5rem;">
+                <i class="fas fa-check"></i>
+            </div>
+            <h2 id="success-title">Success!</h2>
+            <p id="success-msg" style="color: var(--text-gray); margin-bottom: 2rem;">Your submission was received.</p>
+            <button class="btn btn-primary modal-close-all" style="width: 100%;">Close</button>
+        </div>
+    </div>
+
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // --- Mock Data ---
+        const jobs = [
+            {
+                id: 1,
+                title: "Senior Product Manager",
+                company: "TechFin Solutions",
+                location: "London (Hybrid)",
+                type: "Full-time",
+                deadline: "2023-12-15",
+                description: "Leading our core banking product transformation.",
+                responsibilities: ["Define product vision", "Manage stakeholder expectations", "Lead sprint planning"],
+                salary: "£80,000 - £110,000"
+            },
+            {
+                id: 2,
+                title: "Frontend Developer",
+                company: "Creative Studio",
+                location: "Remote",
+                type: "Contract",
+                deadline: "2023-11-30",
+                description: "Building immersive web experiences for luxury brands.",
+                responsibilities: ["Develop responsive UIs", "Optimize for performance", "Collaborate with designers"],
+                salary: "$60 - $80 / hr"
+            },
+            {
+                id: 3,
+                title: "HR Director",
+                company: "Global Logistics",
+                location: "New York (On-site)",
+                type: "Full-time",
+                deadline: "2024-01-10",
+                description: "Overseeing talent acquisition and employee relations for 500+ staff.",
+                responsibilities: ["Strategy development", "Compliance management", "Executive reporting"],
+                salary: "Competitive"
+            }
+        ];
+
+        let currentJob = null;
+
+        // --- State & Selectors ---
+        const dom = {
+            modals: {
+                list: document.getElementById('modal-list-job'),
+                apply: document.getElementById('modal-apply-job'),
+                success: document.getElementById('modal-success')
+            },
+            triggers: {
+                list: document.getElementById('nav-list-job'),
+                apply: document.getElementById('nav-apply-job'),
+                heroApply: document.getElementById('hero-cta-apply')
+            },
+            views: {
+                listings: document.getElementById('view-listings'),
+                details: document.getElementById('view-details'),
+                application: document.getElementById('view-application')
+            },
+            containers: {
+                listings: document.getElementById('listings-container'),
+                details: document.getElementById('job-detail-content')
+            },
+            forms: {
+                list: document.getElementById('form-list-job'),
+                apply: document.getElementById('form-application')
+            },
+            filters: {
+                search: document.getElementById('job-search'),
+                type: document.getElementById('job-filter-type')
+            }
+        };
+
+        // --- Modal System ---
+        const app = {
+            openModal: (modalId) => {
+                const modal = typeof modalId === 'string' ? document.getElementById(modalId) : modalId;
+                if (modal) {
+                    modal.classList.add('active');
+                    modal.setAttribute('aria-hidden', 'false');
+                    document.body.style.overflow = 'hidden'; // Lock scroll
+                }
+            },
+            
+            closeModal: (modal) => {
+                modal.classList.remove('active');
+                modal.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            },
+            
+            closeAll: () => {
+                document.querySelectorAll('.modal-overlay').forEach(m => app.closeModal(m));
+            },
+
+            switchView: (viewId) => {
+                Object.values(dom.views).forEach(el => el && el.classList.remove('active'));
+                dom.views[viewId]?.classList.add('active');
+                // Reset scroll position of container
+                if (dom.modals.apply) {
+                     const container = dom.modals.apply.querySelector('.modal-container');
+                     if (container) container.scrollTop = 0;
+                }
+            },
+
+            showSuccess: (title, msg) => {
+                app.closeAll();
+                const titleEl = document.getElementById('success-title');
+                const msgEl = document.getElementById('success-msg');
+                if (titleEl) titleEl.textContent = title;
+                if (msgEl) msgEl.textContent = msg;
+                app.openModal('modal-success');
+            }
+        };
+
+        // Expose to window for inline onclick handlers
+        window.app = app;
+
+        // --- Modal Event Listeners ---
+
+        // 1. Navigation Triggers
+        if(dom.triggers.list) {
+            dom.triggers.list.addEventListener('click', (e) => {
+                e.preventDefault();
+                app.openModal(dom.modals.list);
+            });
+        }
+
+        const openApplyModal = (e) => {
+            e.preventDefault();
+            app.switchView('listings'); // Reset to listings
+            renderJobs(jobs);
+            app.openModal(dom.modals.apply);
+        };
+
+        if(dom.triggers.apply) dom.triggers.apply.addEventListener('click', openApplyModal);
+        if(dom.triggers.heroApply) dom.triggers.heroApply.addEventListener('click', openApplyModal);
+
+        // 2. Close Actions
+        document.querySelectorAll('.modal-close, .modal-close-btn, .modal-close-all').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if(btn.classList.contains('modal-close-all')) app.closeAll();
+                else app.closeModal(btn.closest('.modal-overlay'));
+            });
+        });
+
+        // Close on outside click for modals
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) app.closeModal(modal);
+            });
+        });
+
+        // 3. Job Filtering
+        const filterJobs = () => {
+            const term = dom.filters.search.value.toLowerCase();
+            const type = dom.filters.type.value;
+
+            const filtered = jobs.filter(job => {
+                const matchText = job.title.toLowerCase().includes(term) || job.company.toLowerCase().includes(term);
+                const matchType = type === 'all' || job.type === type;
+                return matchText && matchType;
+            });
+            renderJobs(filtered);
+        };
+
+        if(dom.filters.search) dom.filters.search.addEventListener('input', filterJobs);
+        if(dom.filters.type) dom.filters.type.addEventListener('change', filterJobs);
+
+        // --- Render Logic ---
+
+        function renderJobs(data) {
+            if (!dom.containers.listings) return;
+            dom.containers.listings.innerHTML = '';
+            
+            if (data.length === 0) {
+                dom.containers.listings.innerHTML = '<p class="text-center" style="color: var(--text-light); padding: 2rem;">No jobs found matching criteria.</p>';
+                return;
+            }
+
+            data.forEach(job => {
+                const div = document.createElement('div');
+                div.className = 'job-card';
+                div.innerHTML = `
+                    <div class="job-card-header">
+                        <h3 style="font-size: 1.1rem; color: var(--primary-navy);">${job.title}</h3>
+                        <span class="job-tag">${job.type}</span>
+                    </div>
+                    <div style="font-weight: 500; color: var(--text-gray); font-size: 0.95rem;">${job.company}</div>
+                    <div class="job-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> ${job.location}</span>
+                        <span><i class="far fa-clock"></i> ${job.deadline}</span>
+                    </div>
+                `;
+                div.addEventListener('click', () => loadJobDetails(job));
+                dom.containers.listings.appendChild(div);
+            });
+        }
+
+        function loadJobDetails(job) {
+            currentJob = job;
+            const list = (arr) => arr.map(i => `<li>${i}</li>`).join('');
+            
+            if (!dom.containers.details) return;
+
+            dom.containers.details.innerHTML = `
+                <div style="border-bottom: 1px solid var(--border-gray); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                    <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">${job.title}</h2>
+                    <div style="display:flex; gap: 1rem; color: var(--text-gray); font-size: 0.9rem;">
+                        <span>${job.company}</span>
+                        <span>&bull;</span>
+                        <span>${job.location}</span>
+                    </div>
+                </div>
+                
+                <h4 style="margin: 1rem 0 0.5rem;">Overview</h4>
+                <p style="color: var(--text-gray); font-size: 0.95rem;">${job.description}</p>
+                
+                <h4 style="margin: 1.5rem 0 0.5rem;">Key Responsibilities</h4>
+                <ul style="padding-left: 1.2rem; color: var(--text-gray); font-size: 0.95rem;">${list(job.responsibilities)}</ul>
+                
+                <div class="job-actions">
+                    <button class="btn btn-primary" id="btn-apply-now">Apply for this Job</button>
+                </div>
+            `;
+
+            document.getElementById('btn-apply-now')?.addEventListener('click', () => {
+                const titleEl = document.getElementById('apply-role-title');
+                if (titleEl) titleEl.textContent = job.title;
+                const idInput = document.getElementById('app-job-id');
+                if (idInput) idInput.value = job.id.toString();
+                app.switchView('application');
+            });
+
+            app.switchView('details');
+        }
+
+        // --- Drag & Drop File Upload ---
+
+        function setupFileDrop(areaId) {
+            const area = document.getElementById(areaId);
+            if (!area) return;
+            
+            const input = area.querySelector('input[type="file"]');
+            const nameDisplay = area.querySelector('.file-name');
+
+            area.addEventListener('click', () => input && input.click());
+            
+            if (input) {
+                input.addEventListener('change', () => {
+                    if (input.files && input.files.length && nameDisplay) nameDisplay.textContent = input.files[0].name;
+                });
+            }
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
+                area.addEventListener(evt, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+            });
+
+            ['dragenter', 'dragover'].forEach(evt => {
+                area.addEventListener(evt, () => area.classList.add('drag-active'));
+            });
+
+            ['dragleave', 'drop'].forEach(evt => {
+                area.addEventListener(evt, () => area.classList.remove('drag-active'));
+            });
+
+            area.addEventListener('drop', (e) => {
+                const files = e.dataTransfer?.files;
+                if (files && files.length) {
+                    if (input) input.files = files; // Note: works in modern browsers
+                    if (nameDisplay) nameDisplay.textContent = files[0].name;
+                }
+            });
+        }
+
+        setupFileDrop('drop-cv');
+        setupFileDrop('drop-cl');
+
+        // --- Generic Form Handling (for Modals) ---
+
+        function handleForm(form, successTitle, successMsg) {
+            if (!form) return;
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = form.querySelector('button[type="submit"]');
+                const status = form.querySelector('.status-msg');
+                const originalText = btn.innerHTML;
+
+                // Loading State
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                btn.disabled = true;
+                if (status) status.style.display = 'none';
+
+                // Simulation of API Call (Replace with Web3Forms fetch in production)
+                // Using timeout to simulate network request as Web3Forms requires valid key
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    
+                    // Success
+                    form.reset();
+                    document.querySelectorAll('.file-name').forEach(el => el.textContent = '');
+                    app.showSuccess(successTitle, successMsg);
+                }, 1500);
+            });
+        }
+
+        handleForm(dom.forms.list, 'Job Posted', 'Your listing is under review and will be live shortly.');
+        handleForm(dom.forms.apply, 'Application Sent', 'Good luck! The employer has received your application.');
+
+
+        // ============================================
+        // ORIGINAL PAGE FUNCTIONALITY (Nav, Scroll, Contact)
+        // ============================================
+
         const navToggle = document.querySelector('.nav-toggle');
         const navMenu = document.querySelector('.nav-menu');
         const navbar = document.querySelector('.navbar');
@@ -2001,6 +2648,13 @@
 
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
+                // Modified: Only prevent default if it's NOT a modal trigger
+                const id = this.id;
+                if (id === 'nav-list-job' || id === 'nav-apply-job' || id === 'hero-cta-apply') {
+                    e.preventDefault();
+                    return;
+                }
+
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
