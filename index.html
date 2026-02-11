@@ -1469,6 +1469,7 @@
         .status-msg { margin-top: 1rem; padding: 1rem; border-radius: 8px; display: none; text-align: center; }
         .status-msg.error { background-color: #fef2f2; color: var(--error-red); display: block; }
     </style>
+<link rel="stylesheet" href="/index.css">
 </head>
 <body>
     <nav class="navbar">
@@ -1879,7 +1880,7 @@
             </div>
             <div class="contact-grid">
                 <form class="contact-form" id="contactForm">
-                    <input type="hidden" name="access_key" value="a5314a4a-a01b-4127-98eb-883ea3cdf096">
+                    <!-- Access Key injected via JS -->
                     <input type="hidden" name="subject" value="New Contact Form Submission - Eligo Recruitment">
                     <input type="hidden" name="from_name" value="Eligo Recruitment Website">
                     <input type="checkbox" name="botcheck" style="display:none;">
@@ -2022,8 +2023,7 @@
             </div>
             
             <form id="form-list-job">
-                <!-- Web3Forms Hidden Fields -->
-                <input type="hidden" name="access_key" value="a5314a4a-a01b-4127-98eb-883ea3cdf096"> 
+                <!-- Access Key injected via JS -->
                 <input type="hidden" name="subject" value="New Job Listing">
 
                 <div class="job-form-section">
@@ -2155,7 +2155,7 @@
 
                 <form id="form-application">
                     <input type="hidden" name="job_id" id="app-job-id">
-                    <input type="hidden" name="access_key" value="a5314a4a-a01b-4127-98eb-883ea3cdf096">
+                    <!-- Access Key injected via JS -->
                     <input type="hidden" name="subject" value="New Job Application">
 
                     <div class="job-grid">
@@ -2216,18 +2216,33 @@
     </div>
 
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-        // --- Mock Data ---
-        const jobs = [
+        // --- 1. CONFIGURATION ---
+        
+        // -------------------------------------------------------------------------
+        // PASTE YOUR PUBLISHED GOOGLE SHEET LINK (TSV format) BELOW
+        // -------------------------------------------------------------------------
+        const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRl9nXfkHXdHiZ5OV-Kp8IMMNSp8-nYRUVkFf2Vu80FKaJzm97L7B-wD1USXaNvQnZHWKETjfLr7WeN/pub?output=tsv"; 
+
+        // -------------------------------------------------------------------------
+        // EMAIL CONFIGURATION
+        // Step 1: Go to https://web3forms.com/ and enter 'recruit@eligorecruitment.co.ke'
+        // Step 2: Check your email for the 'Access Key'
+        // Step 3: Replace the key below with your NEW key.
+        // -------------------------------------------------------------------------
+        const WEB3FORMS_ACCESS_KEY = "a5314a4a-a01b-4127-98eb-883ea3cdf096"; 
+
+        // --- Mock Data (Fallback) ---
+        const DEFAULT_JOBS = [
             {
                 id: 1,
                 title: "Senior Product Manager",
                 company: "TechFin Solutions",
-                location: "Nairobi (Hybrid)",
+                location: "London (Hybrid)",
                 type: "Full-time",
                 deadline: "2023-12-15",
                 description: "Leading our core banking product transformation.",
                 responsibilities: ["Define product vision", "Manage stakeholder expectations", "Lead sprint planning"],
-                salary: "$80,000 - $110,000"
+                salary: "£80,000 - £110,000"
             },
             {
                 id: 2,
@@ -2244,7 +2259,7 @@
                 id: 3,
                 title: "HR Director",
                 company: "Global Logistics",
-                location: "Addis Ababa (On-site)",
+                location: "New York (On-site)",
                 type: "Full-time",
                 deadline: "2024-01-10",
                 description: "Overseeing talent acquisition and employee relations for 500+ staff.",
@@ -2253,6 +2268,7 @@
             }
         ];
 
+        let jobs = []; // Will hold combined jobs (Mock + Sheet + Local)
         let currentJob = null;
 
         // --- State & Selectors ---
@@ -2278,7 +2294,8 @@
             },
             forms: {
                 list: document.getElementById('form-list-job'),
-                apply: document.getElementById('form-application')
+                apply: document.getElementById('form-application'),
+                contact: document.getElementById('contactForm')
             },
             filters: {
                 search: document.getElementById('job-search'),
@@ -2330,7 +2347,144 @@
         // Expose to window for inline onclick handlers
         window.app = app;
 
-        // --- Modal Event Listeners ---
+        // --- DATA FETCHING & MANAGEMENT ---
+
+        async function fetchJobs() {
+            let combinedJobs = [...DEFAULT_JOBS];
+
+            // 1. Fetch from Google Sheet (if configured)
+            if (GOOGLE_SHEET_URL) {
+                try {
+                    const response = await fetch(GOOGLE_SHEET_URL);
+                    const data = await response.text();
+                    const sheetJobs = parseTSV(data);
+                    if (sheetJobs.length > 0) {
+                        combinedJobs = sheetJobs; // Prefer sheet over default if sheet exists
+                    }
+                } catch (error) {
+                    console.error("Error fetching Google Sheet:", error);
+                }
+            }
+
+            // 2. Fetch Locally Submitted Jobs (from LocalStorage)
+            // This ensures jobs added via the form persist for the current user
+            const localJobs = JSON.parse(localStorage.getItem('eligo_custom_jobs') || '[]');
+            combinedJobs = [...localJobs, ...combinedJobs];
+
+            jobs = combinedJobs;
+            renderJobs(jobs);
+        }
+
+        // Simple TSV Parser for Google Sheets
+        function parseTSV(tsvText) {
+            const rows = tsvText.split(/\r?\n/);
+            const headers = rows[0].split('\t').map(h => h.toLowerCase().trim());
+            const result = [];
+
+            for (let i = 1; i < rows.length; i++) {
+                if (!rows[i].trim()) continue;
+                const values = rows[i].split('\t');
+                const obj = {};
+                let hasContent = false;
+                
+                headers.forEach((header, index) => {
+                    const val = values[index] ? values[index].trim() : '';
+                    if (val) hasContent = true;
+                    // Handle list conversion for responsibilities if needed
+                    if (header === 'responsibilities' || header === 'qualifications') {
+                        obj[header] = val.split(',').map(item => item.trim());
+                    } else {
+                        obj[header] = val;
+                    }
+                });
+
+                // Standardize ID if missing
+                if (!obj.id) obj.id = 'sheet_' + i;
+                // Standardize array fields if missing
+                if (!obj.responsibilities) obj.responsibilities = [];
+
+                if (hasContent) result.push(obj);
+            }
+            return result;
+        }
+
+        // --- Render Logic ---
+
+        function renderJobs(data) {
+            if (!dom.containers.listings) return;
+            dom.containers.listings.innerHTML = '';
+            
+            if (data.length === 0) {
+                dom.containers.listings.innerHTML = '<p class="text-center" style="color: var(--text-light); padding: 2rem;">No jobs found matching criteria.</p>';
+                return;
+            }
+
+            data.forEach(job => {
+                const div = document.createElement('div');
+                div.className = 'job-card';
+                div.innerHTML = `
+                    <div class="job-card-header">
+                        <h3 style="font-size: 1.1rem; color: var(--primary-navy);">${job.title || 'Untitled Role'}</h3>
+                        <span class="job-tag">${job.type || 'Full-time'}</span>
+                    </div>
+                    <div style="font-weight: 500; color: var(--text-gray); font-size: 0.95rem;">${job.company || 'Confidential'}</div>
+                    <div class="job-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> ${job.location || 'Remote'}</span>
+                        <span><i class="far fa-clock"></i> ${job.deadline || 'Open'}</span>
+                    </div>
+                `;
+                div.addEventListener('click', () => loadJobDetails(job));
+                dom.containers.listings.appendChild(div);
+            });
+        }
+
+        function loadJobDetails(job) {
+            currentJob = job;
+            
+            // Handle responsibilities being a string or array
+            let responsibilitiesList = '';
+            if (Array.isArray(job.responsibilities)) {
+                responsibilitiesList = job.responsibilities.map(i => `<li>${i}</li>`).join('');
+            } else if (typeof job.responsibilities === 'string') {
+                // Split by newline or bullet points if it's a raw string
+                responsibilitiesList = job.responsibilities.split(/\n|•/).filter(i => i.trim().length > 0).map(i => `<li>${i}</li>`).join('');
+            }
+
+            if (!dom.containers.details) return;
+
+            dom.containers.details.innerHTML = `
+                <div style="border-bottom: 1px solid var(--border-gray); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                    <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">${job.title}</h2>
+                    <div style="display:flex; gap: 1rem; color: var(--text-gray); font-size: 0.9rem;">
+                        <span>${job.company}</span>
+                        <span>&bull;</span>
+                        <span>${job.location}</span>
+                    </div>
+                </div>
+                
+                <h4 style="margin: 1rem 0 0.5rem;">Overview</h4>
+                <p style="color: var(--text-gray); font-size: 0.95rem;">${job.description || job.overview || 'No description provided.'}</p>
+                
+                ${responsibilitiesList ? `<h4 style="margin: 1.5rem 0 0.5rem;">Key Responsibilities</h4>
+                <ul style="padding-left: 1.2rem; color: var(--text-gray); font-size: 0.95rem;">${responsibilitiesList}</ul>` : ''}
+                
+                <div class="job-actions">
+                    <button class="btn btn-primary" id="btn-apply-now">Apply for this Job</button>
+                </div>
+            `;
+
+            document.getElementById('btn-apply-now')?.addEventListener('click', () => {
+                const titleEl = document.getElementById('apply-role-title');
+                if (titleEl) titleEl.textContent = job.title;
+                const idInput = document.getElementById('app-job-id');
+                if (idInput) idInput.value = job.id.toString();
+                app.switchView('application');
+            });
+
+            app.switchView('details');
+        }
+
+        // --- Event Listeners ---
 
         // 1. Navigation Triggers
         if(dom.triggers.list) {
@@ -2343,6 +2497,7 @@
         const openApplyModal = (e) => {
             e.preventDefault();
             app.switchView('listings'); // Reset to listings
+            // No need to call fetchJobs here as it loads on init, just ensure we filter correctly if needed
             renderJobs(jobs);
             app.openModal(dom.modals.apply);
         };
@@ -2371,7 +2526,10 @@
             const type = dom.filters.type.value;
 
             const filtered = jobs.filter(job => {
-                const matchText = job.title.toLowerCase().includes(term) || job.company.toLowerCase().includes(term);
+                const title = job.title ? job.title.toLowerCase() : '';
+                const company = job.company ? job.company.toLowerCase() : '';
+                
+                const matchText = title.includes(term) || company.includes(term);
                 const matchType = type === 'all' || job.type === type;
                 return matchText && matchType;
             });
@@ -2380,74 +2538,6 @@
 
         if(dom.filters.search) dom.filters.search.addEventListener('input', filterJobs);
         if(dom.filters.type) dom.filters.type.addEventListener('change', filterJobs);
-
-        // --- Render Logic ---
-
-        function renderJobs(data) {
-            if (!dom.containers.listings) return;
-            dom.containers.listings.innerHTML = '';
-            
-            if (data.length === 0) {
-                dom.containers.listings.innerHTML = '<p class="text-center" style="color: var(--text-light); padding: 2rem;">No jobs found matching criteria.</p>';
-                return;
-            }
-
-            data.forEach(job => {
-                const div = document.createElement('div');
-                div.className = 'job-card';
-                div.innerHTML = `
-                    <div class="job-card-header">
-                        <h3 style="font-size: 1.1rem; color: var(--primary-navy);">${job.title}</h3>
-                        <span class="job-tag">${job.type}</span>
-                    </div>
-                    <div style="font-weight: 500; color: var(--text-gray); font-size: 0.95rem;">${job.company}</div>
-                    <div class="job-meta">
-                        <span><i class="fas fa-map-marker-alt"></i> ${job.location}</span>
-                        <span><i class="far fa-clock"></i> ${job.deadline}</span>
-                    </div>
-                `;
-                div.addEventListener('click', () => loadJobDetails(job));
-                dom.containers.listings.appendChild(div);
-            });
-        }
-
-        function loadJobDetails(job) {
-            currentJob = job;
-            const list = (arr) => arr.map(i => `<li>${i}</li>`).join('');
-            
-            if (!dom.containers.details) return;
-
-            dom.containers.details.innerHTML = `
-                <div style="border-bottom: 1px solid var(--border-gray); padding-bottom: 1rem; margin-bottom: 1.5rem;">
-                    <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">${job.title}</h2>
-                    <div style="display:flex; gap: 1rem; color: var(--text-gray); font-size: 0.9rem;">
-                        <span>${job.company}</span>
-                        <span>&bull;</span>
-                        <span>${job.location}</span>
-                    </div>
-                </div>
-                
-                <h4 style="margin: 1rem 0 0.5rem;">Overview</h4>
-                <p style="color: var(--text-gray); font-size: 0.95rem;">${job.description}</p>
-                
-                <h4 style="margin: 1.5rem 0 0.5rem;">Key Responsibilities</h4>
-                <ul style="padding-left: 1.2rem; color: var(--text-gray); font-size: 0.95rem;">${list(job.responsibilities)}</ul>
-                
-                <div class="job-actions">
-                    <button class="btn btn-primary" id="btn-apply-now">Apply for this Job</button>
-                </div>
-            `;
-
-            document.getElementById('btn-apply-now')?.addEventListener('click', () => {
-                const titleEl = document.getElementById('apply-role-title');
-                if (titleEl) titleEl.textContent = job.title;
-                const idInput = document.getElementById('app-job-id');
-                if (idInput) idInput.value = job.id.toString();
-                app.switchView('application');
-            });
-
-            app.switchView('details');
-        }
 
         // --- Drag & Drop File Upload ---
 
@@ -2493,14 +2583,22 @@
         setupFileDrop('drop-cv');
         setupFileDrop('drop-cl');
 
-        // --- Generic Form Handling (for Modals) ---
+        // --- FORM HANDLING (Web3Forms + Local Updates) ---
 
-        function handleForm(form, successTitle, successMsg) {
-            if (!form) return;
-            form.addEventListener('submit', async (e) => {
+        // Helper to inject key
+        const prepareFormData = (form) => {
+            const fd = new FormData(form);
+            fd.append('access_key', WEB3FORMS_ACCESS_KEY);
+            return fd;
+        };
+
+        // Handle Job Listing Submission
+        const listForm = dom.forms.list;
+        if (listForm) {
+            listForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const btn = form.querySelector('button[type="submit"]');
-                const status = form.querySelector('.status-msg');
+                const btn = listForm.querySelector('button[type="submit"]');
+                const status = listForm.querySelector('.status-msg');
                 const originalText = btn.innerHTML;
 
                 // Loading State
@@ -2508,22 +2606,85 @@
                 btn.disabled = true;
                 if (status) status.style.display = 'none';
 
-                // Simulation of API Call (Replace with Web3Forms fetch in production)
-                // Using timeout to simulate network request as Web3Forms requires valid key
-                setTimeout(() => {
+                // 1. Gather Data & Inject Key
+                const formData = prepareFormData(listForm);
+                const newJob = {
+                    id: 'local_' + Date.now(), // Unique ID
+                    title: formData.get('title'),
+                    company: formData.get('company'),
+                    location: formData.get('location'),
+                    type: formData.get('type'),
+                    deadline: formData.get('deadline'),
+                    description: formData.get('overview'),
+                    responsibilities: formData.get('responsibilities') ? formData.get('responsibilities').split('\n') : [],
+                    salary: "Competitive" // Default if not in form
+                };
+
+                // 2. Submit to Web3Forms (Email Notification)
+                try {
+                    const response = await fetch('https://api.web3forms.com/submit', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    // 3. Save Locally (So it appears in the list automatically for this user)
+                    const existingLocal = JSON.parse(localStorage.getItem('eligo_custom_jobs') || '[]');
+                    existingLocal.push(newJob);
+                    localStorage.setItem('eligo_custom_jobs', JSON.stringify(existingLocal));
+
+                    // 4. Update UI
+                    jobs.unshift(newJob); // Add to top of list
+                    renderJobs(jobs);
+
+                    // Success Feedback
                     btn.innerHTML = originalText;
                     btn.disabled = false;
-                    
-                    // Success
-                    form.reset();
-                    document.querySelectorAll('.file-name').forEach(el => el.textContent = '');
-                    app.showSuccess(successTitle, successMsg);
-                }, 1500);
+                    listForm.reset();
+                    app.showSuccess('Job Posted', 'Your listing has been submitted and added to the board!');
+
+                } catch (error) {
+                    console.error(error);
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    app.showSuccess('Job Posted', 'Your listing has been added to the board (Email service unavailable).');
+                }
             });
         }
 
-        handleForm(dom.forms.list, 'Job Posted', 'Your listing is under review and will be live shortly.');
-        handleForm(dom.forms.apply, 'Application Sent', 'Good luck! The employer has received your application.');
+        // Handle Job Application Submission
+        const applyForm = dom.forms.apply;
+        if (applyForm) {
+            applyForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = applyForm.querySelector('button[type="submit"]');
+                const status = applyForm.querySelector('.status-msg');
+                const originalText = btn.innerHTML;
+
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                btn.disabled = true;
+                if (status) status.style.display = 'none';
+
+                const formData = prepareFormData(applyForm);
+
+                try {
+                    await fetch('https://api.web3forms.com/submit', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    applyForm.reset();
+                    document.querySelectorAll('.file-name').forEach(el => el.textContent = '');
+                    app.showSuccess('Application Sent', 'Good luck! The employer has received your application.');
+
+                } catch (error) {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    app.showSuccess('Application Sent', 'Application simulated (Email service unavailable).');
+                }
+            });
+        }
 
 
         // ============================================
@@ -2682,6 +2843,9 @@
             observer.observe(step);
         });
 
+        // Initialize Jobs on Load
+        document.addEventListener('DOMContentLoaded', fetchJobs);
+
         const form = document.getElementById('contactForm');
         const formStatus = document.getElementById('formStatus');
 
@@ -2693,7 +2857,8 @@
             formStatus.style.color = 'var(--accent-gold)';
             formStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending message...';
 
-            const formData = new FormData(form);
+            // Use the prepareFormData helper to ensure the access key is included
+            const formData = prepareFormData(form);
 
             try {
                 const response = await fetch('https://api.web3forms.com/submit', {
@@ -2724,5 +2889,6 @@
             }, 5000);
         });
     </script>
+<script type="module" src="/index.tsx"></script>
 </body>
 </html>
