@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eligo Recruitment | Enhancing Careers, Enriching Companies</title>
-    <meta name="description" content=" Premier recruitment agency connecting top talent with leading companies. Executive search, talent acquisition, and recruitment consulting services across Kenya and Africa.">
-    <link rel="icon" type="image/svg+xml" href="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/ERLogo70.svg">
+    <meta name="description"
+        content=" Premier recruitment agency connecting top talent with leading companies. Executive search, talent acquisition, and recruitment consulting services across Kenya and Africa.">
+    <link rel="icon" type="image/svg+xml"
+        href="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/ERLogo70.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800;900&family=Libre+Baskerville:wght@700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800;900&family=Libre+Baskerville:wght@700&family=Montserrat:wght@700;800;900&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --primary-navy: #0a2540;
@@ -42,6 +47,8 @@
 
             --container-max: 1280px;
             --container-padding: clamp(1rem, 5vw, 2rem);
+
+            --navbar-height: 80px;
         }
 
         * {
@@ -65,7 +72,12 @@
             overflow-x: hidden;
         }
 
-        h1, h2, h3, h4, h5, h6 {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
             font-family: var(--font-heading);
             font-weight: 700;
             line-height: 1.2;
@@ -73,15 +85,27 @@
             letter-spacing: -0.02em;
         }
 
-        h1, h2 {
+        h1,
+        h2 {
             font-family: 'Libre Baskerville', serif;
             font-weight: 700;
         }
 
-        h1 { font-size: clamp(2.5rem, 4vw + 1rem, 4.5rem); }
-        h2 { font-size: clamp(2rem, 3vw + 1rem, 3.5rem); }
-        h3 { font-size: clamp(1.5rem, 2vw + 0.5rem, 2rem); }
-        h4 { font-size: clamp(1.25rem, 1.5vw + 0.5rem, 1.5rem); }
+        h1 {
+            font-size: clamp(2.5rem, 4vw + 1rem, 4.5rem);
+        }
+
+        h2 {
+            font-size: clamp(2rem, 3vw + 1rem, 3.5rem);
+        }
+
+        h3 {
+            font-size: clamp(1.5rem, 2vw + 0.5rem, 2rem);
+        }
+
+        h4 {
+            font-size: clamp(1.25rem, 1.5vw + 0.5rem, 1.5rem);
+        }
 
         p {
             color: var(--text-gray);
@@ -146,48 +170,97 @@
         }
 
         .btn-secondary:hover {
-            background-color: rgba(255, 255, 255, 0.15);
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
             transform: translateY(-2px);
         }
 
+        /* ============================================
+           NAVBAR STYLES (Modern Transparent to Solid)
+           ============================================ */
         .navbar {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 1000;
-            background-color: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-gray);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-            transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            /* Transparent gradient background initially */
+            background: linear-gradient(to bottom, rgba(10, 37, 64, 0.8) 0%, rgba(10, 37, 64, 0) 100%);
+            height: var(--navbar-height);
+            transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(2px);
         }
 
         nav.navbar.scrolled {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        nav.navbar[data-scrolled="true"] {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            background-color: var(--primary-navy);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid var(--accent-gold);
+            height: 70px;
+            /* Shrink slightly on scroll */
+            backdrop-filter: blur(12px);
         }
 
         .nav-container {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: clamp(0.75rem, 1.5vw, 1rem) var(--container-padding);
+            padding: 0 var(--container-padding);
             max-width: var(--container-max);
             margin: 0 auto;
+            height: 100%;
+            position: relative;
+        }
+
+        /* Floating Logo Container */
+        .nav-logo {
+            background-color: var(--bg-white);
+            padding: 12px 25px 18px;
+            /* Taller than navbar */
+            border-radius: 0 0 20px 20px;
+            /* Tab shape */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            position: relative;
+            top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: -2px;
+            /* Pull up slightly */
+            z-index: 1002;
+        }
+
+        .nav-logo::before {
+            /* Top gold accent for the logo tab */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-gold);
+            border-radius: 0 0 2px 2px;
+        }
+
+        .nav-logo:hover {
+            transform: translateY(4px);
+            box-shadow: 0 12px 30px rgba(201, 168, 96, 0.3);
         }
 
         .nav-logo img {
-            height: clamp(48px, 6vw, 68px);
+            height: 60px;
+            /* Large size */
             width: auto;
-            transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s ease;
         }
 
-        .nav-logo:hover img {
-            transform: scale(1.05);
+        nav.navbar.scrolled .nav-logo {
+            padding: 8px 20px 12px;
+        }
+
+        nav.navbar.scrolled .nav-logo img {
+            height: 50px;
         }
 
         .nav-menu {
@@ -197,115 +270,102 @@
             align-items: center;
         }
 
-        .nav-menu a {
-            font-family: var(--font-heading);
-            font-size: clamp(0.875rem, 1vw, 0.9375rem);
-            font-weight: 600;
-            color: var(--primary-navy);
-            position: relative;
-            padding: 0.5rem 0;
-            transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .nav-menu a:hover {
-            opacity: 0.7;
-        }
-
-        .nav-menu a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--accent-gold);
-            transition: width var(--transition-base);
-        }
-
-        .nav-menu a:hover {
-            color: var(--accent-gold);
-        }
-
-        .nav-menu a:hover::after {
-            width: 100%;
-        }
-
-        /* ============================================
-           DROPDOWN MENU STYLES - JOBS DROPDOWN
-           ============================================ */
-
-        /* Dropdown container */
-        .nav-dropdown {
-            position: relative;
-        }
-
-        /* Dropdown trigger button - matches existing nav links */
+        /* Nav Links */
+        .nav-menu a,
         .dropdown-trigger {
             font-family: var(--font-heading);
             font-size: clamp(0.875rem, 1vw, 0.9375rem);
             font-weight: 600;
-            color: var(--primary-navy);
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0.5rem 0;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.375rem;
+            color: rgba(255, 255, 255, 0.95);
             position: relative;
-            transition: color var(--transition-base);
+            padding: 0.5rem 0;
+            transition: color 300ms ease;
+            letter-spacing: 0.03em;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
 
-        .dropdown-trigger:hover {
+        .nav-menu a:hover,
+        .dropdown-trigger:hover,
+        .nav-dropdown.active .dropdown-trigger {
             color: var(--accent-gold);
         }
 
-        /* Chevron icon */
+        /* Gold Underline Animation */
+        .nav-menu a::after,
+        .dropdown-trigger::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            /* Start from center */
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-gold);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(-50%);
+            box-shadow: 0 0 8px var(--accent-gold);
+        }
+
+        .nav-menu a:hover::after,
+        .dropdown-trigger:hover::after,
+        .nav-dropdown.active .dropdown-trigger::after {
+            width: 100%;
+        }
+
+        /* Dropdown Adjustments */
+        .dropdown-trigger {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
         .dropdown-trigger .chevron {
             font-size: 0.75rem;
             transition: transform var(--transition-base);
         }
 
-        /* Rotate chevron when dropdown is open */
         .nav-dropdown.active .dropdown-trigger .chevron,
         .nav-dropdown:hover .dropdown-trigger .chevron {
             transform: rotate(180deg);
         }
 
-        /* Underline effect on hover - matches existing nav links */
-        .dropdown-trigger::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--accent-gold);
-            transition: width var(--transition-base);
+        .nav-dropdown {
+            position: relative;
         }
 
-        .dropdown-trigger:hover::after {
-            width: calc(100% - 1rem);
-        }
-
-        /* Dropdown menu container */
         .dropdown-menu {
             position: absolute;
             top: 100%;
-            left: 0;
-            margin-top: 0.5rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            margin-top: 15px;
             background-color: var(--bg-white);
             border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
-            min-width: 200px;
-            padding: 0.5rem 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            min-width: 220px;
+            padding: 0.75rem 0;
             opacity: 0;
             visibility: hidden;
-            transform: translateY(-10px);
-            transition: opacity var(--transition-base),
-                        transform var(--transition-base),
-                        visibility var(--transition-base);
+            transition: all 0.3s ease;
             z-index: 1001;
+            border-top: 3px solid var(--accent-gold);
+        }
+
+        .dropdown-menu::before {
+            /* Arrow pointing up */
+            content: '';
+            position: absolute;
+            top: -7px;
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg);
+            width: 14px;
+            height: 14px;
+            background-color: white;
+            border-left: 3px solid var(--accent-gold);
+            border-top: 3px solid var(--accent-gold);
         }
 
         /* Desktop: Show dropdown on hover */
@@ -313,7 +373,7 @@
             .nav-dropdown:hover .dropdown-menu {
                 opacity: 1;
                 visibility: visible;
-                transform: translateY(0);
+                transform: translateX(-50%) translateY(0);
             }
         }
 
@@ -321,57 +381,143 @@
         .nav-dropdown.active .dropdown-menu {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0);
+            transform: translateX(-50%) translateY(0);
         }
 
-        /* Dropdown menu items */
         .dropdown-menu a {
             display: block;
-            padding: 0.75rem 1.25rem;
-            color: var(--text-dark);
+            padding: 0.75rem 1.5rem;
+            color: var(--primary-navy) !important;
             font-size: 0.9375rem;
             font-weight: 500;
-            transition: background-color var(--transition-fast), color var(--transition-fast);
+            transition: all 0.2s ease;
             white-space: nowrap;
-        }
-
-        /* Remove the ::after underline from dropdown items */
-        .dropdown-menu a::after {
-            display: none;
+            text-shadow: none;
         }
 
         .dropdown-menu a:hover {
-            background-color: var(--bg-gray-50);
-            color: var(--accent-gold);
+            color: var(--accent-gold) !important;
+            background-color: rgba(201, 168, 96, 0.08);
+            padding-left: 1.75rem;
+            /* Slide effect */
         }
 
-        /* Focus styles for accessibility */
-        .dropdown-trigger:focus {
-            outline: 2px solid var(--accent-gold);
-            outline-offset: 2px;
-        }
-
-        .dropdown-menu a:focus {
-            outline: 2px solid var(--accent-gold);
-            outline-offset: -2px;
-            background-color: var(--bg-gray-50);
+        .dropdown-menu a::after {
+            display: none;
         }
 
         .nav-toggle {
             display: none;
             flex-direction: column;
-            gap: 5px;
+            gap: 6px;
             cursor: pointer;
             padding: 0.5rem;
             z-index: 1001;
         }
 
         .nav-toggle span {
-            width: 25px;
+            width: 28px;
             height: 2px;
-            background-color: var(--primary-navy);
+            background-color: white;
             transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 2px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Mobile Menu Override */
+        @media (max-width: 992px) {
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100vh;
+                background-color: var(--primary-navy);
+                background-image: radial-gradient(circle at 100% 0%, rgba(201, 168, 96, 0.1) 0%, transparent 50%);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem;
+                gap: 2rem;
+                transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 999;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-menu li {
+                width: 100%;
+                text-align: center;
+                border-bottom: none;
+            }
+
+            .nav-menu a,
+            .dropdown-trigger {
+                padding: 0;
+                width: 100%;
+                color: white;
+                font-size: 1.5rem;
+                justify-content: center;
+            }
+
+            .nav-dropdown .dropdown-trigger {
+                width: 100%;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .nav-dropdown .dropdown-menu {
+                position: relative;
+                top: auto;
+                left: auto;
+                transform: none;
+                margin-top: 1rem;
+                box-shadow: none;
+                background-color: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-left: none;
+                border-top: none;
+                width: 100%;
+                max-width: 300px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .dropdown-menu::before {
+                display: none;
+            }
+
+            .nav-dropdown .dropdown-menu a {
+                color: rgba(255, 255, 255, 0.9) !important;
+                font-size: 1.1rem;
+                padding: 1rem;
+            }
+
+            .nav-dropdown .dropdown-menu a:hover {
+                color: var(--accent-gold) !important;
+                background: none;
+                padding-left: 1rem;
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+
+            .nav-toggle.active span:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+                background-color: var(--accent-gold);
+            }
+
+            .nav-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .nav-toggle.active span:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+                background-color: var(--accent-gold);
+            }
         }
 
         .hero {
@@ -382,7 +528,7 @@
             justify-content: center;
             background: linear-gradient(135deg, #0a2540 0%, #1a3a5c 100%);
             overflow: hidden;
-            padding-top: clamp(70px, 10vw, 90px);
+            padding-top: var(--navbar-height);
         }
 
         .hero-bg {
@@ -405,7 +551,7 @@
             width: 100%;
             height: 100%;
             background-image: radial-gradient(circle at 20% 50%, rgba(201, 168, 96, 0.08) 0%, transparent 50%),
-                              radial-gradient(circle at 80% 80%, rgba(201, 168, 96, 0.08) 0%, transparent 50%);
+                radial-gradient(circle at 80% 80%, rgba(201, 168, 96, 0.08) 0%, transparent 50%);
             z-index: 1;
         }
 
@@ -494,12 +640,12 @@
         .hero-title__divider {
             width: 1.5px;
             height: clamp(2.5rem, 6vw, 4rem);
-            background: linear-gradient(to bottom, 
-                rgba(201, 168, 96, 0) 0%, 
-                rgba(201, 168, 96, 0.3) 15%,
-                var(--accent-gold) 50%, 
-                rgba(201, 168, 96, 0.3) 85%,
-                rgba(201, 168, 96, 0) 100%);
+            background: linear-gradient(to bottom,
+                    rgba(201, 168, 96, 0) 0%,
+                    rgba(201, 168, 96, 0.3) 15%,
+                    var(--accent-gold) 50%,
+                    rgba(201, 168, 96, 0.3) 85%,
+                    rgba(201, 168, 96, 0) 100%);
             opacity: 0;
             transform: scaleY(0);
             animation: growFade 0.6s ease-out 0.8s forwards;
@@ -538,20 +684,20 @@
                 align-items: center;
                 text-align: center;
             }
-            
+
             .hero-title__divider {
                 width: clamp(60px, 15vw, 100px);
                 height: 1.5px;
-                background: linear-gradient(to right, 
-                    rgba(201, 168, 96, 0) 0%, 
-                    rgba(201, 168, 96, 0.3) 15%,
-                    var(--accent-gold) 50%, 
-                    rgba(201, 168, 96, 0.3) 85%,
-                    rgba(201, 168, 96, 0) 100%);
+                background: linear-gradient(to right,
+                        rgba(201, 168, 96, 0) 0%,
+                        rgba(201, 168, 96, 0.3) 15%,
+                        var(--accent-gold) 50%,
+                        rgba(201, 168, 96, 0.3) 85%,
+                        rgba(201, 168, 96, 0) 100%);
                 transform: scaleX(0);
                 animation: growFadeHorizontal 0.6s ease-out 0.8s forwards;
             }
-            
+
             .hero-title__recruitment {
                 letter-spacing: 0.05em;
             }
@@ -615,6 +761,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -696,22 +843,158 @@
             margin-top: 1rem;
         }
 
+        /* UPDATED: About Image Container for Testimonials */
         .about-image {
             position: relative;
             border-radius: 20px;
             overflow: hidden;
             box-shadow: var(--shadow-2xl);
+            /* Aspect ratio or min-height helps maintain shape */
+            min-height: 400px;
+            cursor: pointer;
         }
 
         .about-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform var(--transition-slow);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* Hover Effect: Blur Image */
         .about-image:hover img {
             transform: scale(1.05);
+            filter: blur(5px) brightness(0.6);
+        }
+
+        /* Testimonials Overlay Container - ORGANIZED HORIZONTAL LAYOUT */
+        .testimonials-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end;
+            padding-bottom: 2rem;
+            overflow: hidden;
+            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        }
+
+        .testimonials-overlay::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* NEW: Track for infinite scrolling */
+        .testimonial-track {
+            display: flex;
+            gap: 1.5rem;
+            animation: scroll-testimonials 60s linear infinite;
+            width: max-content;
+        }
+
+        .testimonial-track:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scroll-testimonials {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-25%);
+            }
+        }
+
+        /* Glassmorphism Card Style - HORIZONTAL THEME */
+        .testimonial-card {
+            position: relative;
+            background: rgba(10, 37, 64, 0.45);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--accent-gold);
+            padding: 1.25rem;
+            border-radius: 12px;
+            color: white;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+            max-width: 280px;
+            min-width: 280px;
+            flex-shrink: 0;
+            pointer-events: auto;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            background: rgba(10, 37, 64, 0.65);
+            transform: translateY(-5px);
+        }
+
+        .testimonial-text {
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .testimonial-author {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .testimonial-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+            color: var(--primary-navy);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+        }
+
+        .testimonial-info h5 {
+            font-size: 0.85rem;
+            color: white;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .testimonial-info span {
+            font-size: 0.7rem;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Show Cards on Hover */
+        .about-image:hover .testimonial-card {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Staggered Entrance - SLIDE UP */
+        .t-card-1 {
+            transition-delay: 0.1s;
+        }
+
+        .t-card-2 {
+            transition-delay: 0.25s;
+        }
+
+        .t-card-3 {
+            transition-delay: 0.4s;
         }
 
         .services {
@@ -936,8 +1219,13 @@
         }
 
         @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(calc(-280px * 8 - 2.5rem * 8)); }
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(calc(-280px * 8 - 2.5rem * 8));
+            }
         }
 
         .client-card {
@@ -984,7 +1272,7 @@
             width: 100%;
             height: 100%;
             background-image: radial-gradient(circle at 30% 30%, rgba(201, 168, 96, 0.1) 0%, transparent 50%),
-                              radial-gradient(circle at 70% 70%, rgba(201, 168, 96, 0.1) 0%, transparent 50%);
+                radial-gradient(circle at 70% 70%, rgba(201, 168, 96, 0.1) 0%, transparent 50%);
             z-index: 0;
         }
 
@@ -1063,7 +1351,7 @@
             margin-bottom: 1.5rem;
         }
 
-        .contact-info > p {
+        .contact-info>p {
             color: rgba(255, 255, 255, 0.8);
             margin-bottom: 2rem;
             line-height: 1.7;
@@ -1223,15 +1511,16 @@
                 position: fixed;
                 top: 0;
                 left: -100%;
-                width: 280px;
+                width: 100%;
                 height: 100vh;
-                background-color: white;
+                background-color: var(--primary-navy);
+                background-image: radial-gradient(circle at 100% 0%, rgba(201, 168, 96, 0.1) 0%, transparent 50%);
                 flex-direction: column;
-                align-items: flex-start;
-                padding: 6rem 2rem 2rem;
-                gap: 0;
-                box-shadow: var(--shadow-xl);
-                transition: left var(--transition-slow);
+                align-items: center;
+                justify-content: center;
+                padding: 2rem;
+                gap: 2rem;
+                transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
                 z-index: 999;
             }
 
@@ -1241,36 +1530,56 @@
 
             .nav-menu li {
                 width: 100%;
-                padding: 1rem 0;
-                border-bottom: 1px solid var(--border-gray);
+                text-align: center;
+                border-bottom: none;
             }
 
-            .nav-menu a {
+            .nav-menu a,
+            .dropdown-trigger {
                 padding: 0;
                 width: 100%;
-                color: var(--primary-navy);
+                color: white;
+                font-size: 1.5rem;
+                justify-content: center;
             }
 
-            /* Mobile: Dropdown styles */
             .nav-dropdown .dropdown-trigger {
                 width: 100%;
-                justify-content: space-between;
-                padding: 0;
+                justify-content: center;
+                gap: 10px;
             }
 
-            /* Mobile: Position dropdown below trigger within mobile menu */
             .nav-dropdown .dropdown-menu {
-                position: static;
-                margin-top: 0.75rem;
+                position: relative;
+                top: auto;
+                left: auto;
+                transform: none;
+                margin-top: 1rem;
                 box-shadow: none;
-                background-color: var(--bg-gray-50);
-                border-left: 3px solid var(--accent-gold);
-                border-radius: 4px;
+                background-color: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-left: none;
+                border-top: none;
+                width: 100%;
+                max-width: 300px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .dropdown-menu::before {
+                display: none;
             }
 
             .nav-dropdown .dropdown-menu a {
-                padding: 0.625rem 1rem;
-                font-size: 0.875rem;
+                color: rgba(255, 255, 255, 0.9) !important;
+                font-size: 1.1rem;
+                padding: 1rem;
+            }
+
+            .nav-dropdown .dropdown-menu a:hover {
+                color: var(--accent-gold) !important;
+                background: none;
+                padding-left: 1rem;
             }
 
             .nav-toggle {
@@ -1278,7 +1587,8 @@
             }
 
             .nav-toggle.active span:nth-child(1) {
-                transform: translateY(7px) rotate(45deg);
+                transform: translateY(8px) rotate(45deg);
+                background-color: var(--accent-gold);
             }
 
             .nav-toggle.active span:nth-child(2) {
@@ -1286,31 +1596,8 @@
             }
 
             .nav-toggle.active span:nth-child(3) {
-                transform: translateY(-7px) rotate(-45deg);
-            }
-
-            .process-step:nth-child(even) .process-visual {
-                order: 1;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .hero-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero-buttons {
-                width: 100%;
-            }
-
-            .hero-buttons .btn {
-                width: 100%;
-            }
-
-            .hero-stats {
-                grid-template-columns: 1fr;
+                transform: translateY(-8px) rotate(-45deg);
+                background-color: var(--accent-gold);
             }
         }
 
@@ -1350,11 +1637,12 @@
            ==================== */
         .modal-overlay {
             position: fixed;
-            top: 0; 
+            top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(10, 37, 64, 0.9); /* var(--primary-navy) with opacity */
+            background-color: rgba(10, 37, 64, 0.9);
+            /* var(--primary-navy) with opacity */
             backdrop-filter: blur(5px);
             z-index: 2000;
             display: flex;
@@ -1373,7 +1661,8 @@
         .modal-container {
             background-color: var(--bg-white);
             width: 100%;
-            height: 100%; /* Full screen on mobile */
+            height: 100%;
+            /* Full screen on mobile */
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -1409,73 +1698,284 @@
             color: var(--error-red);
         }
 
-        .modal-header { margin-bottom: 2rem; text-align: center; border-bottom: 1px solid var(--border-gray); padding-bottom: 1.5rem; }
-        .modal-header h2 { font-size: 1.75rem; margin-bottom: 0.5rem; color: var(--primary-navy); }
-        .modal-header p { color: var(--text-gray); }
+        .modal-header {
+            margin-bottom: 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-gray);
+            padding-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-navy);
+        }
+
+        .modal-header p {
+            color: var(--text-gray);
+        }
 
         /* Job Specific Styles */
-        .job-form-section { margin-bottom: 2rem; border-bottom: 1px solid var(--border-gray); padding-bottom: 2rem; }
-        .job-form-section:last-child { border-bottom: none; }
-        .job-section-title { font-size: 1.25rem; color: var(--primary-navy); margin-bottom: 1rem; border-left: 4px solid var(--accent-gold); padding-left: 1rem; }
+        .job-form-section {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-gray);
+            padding-bottom: 2rem;
+        }
 
-        .job-grid { display: grid; gap: 1.5rem; }
-        @media (min-width: 640px) { .job-grid { grid-template-columns: 1fr 1fr; } .full-width { grid-column: span 2; } }
+        .job-form-section:last-child {
+            border-bottom: none;
+        }
 
-        .job-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--primary-navy); font-size: 0.9rem; }
-        .job-input, .job-select, .job-textarea {
-            width: 100%; padding: 0.875rem; border: 1px solid var(--border-gray); border-radius: 8px;
-            font-family: var(--font-body); font-size: 1rem; background-color: var(--bg-gray-50);
+        .job-section-title {
+            font-size: 1.25rem;
+            color: var(--primary-navy);
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-gold);
+            padding-left: 1rem;
+        }
+
+        .job-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 640px) {
+            .job-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .full-width {
+                grid-column: span 2;
+            }
+        }
+
+        .job-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-navy);
+            font-size: 0.9rem;
+        }
+
+        .job-input,
+        .job-select,
+        .job-textarea {
+            width: 100%;
+            padding: 0.875rem;
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            background-color: var(--bg-gray-50);
             transition: border-color var(--transition-base);
         }
-        .job-input:focus, .job-select:focus, .job-textarea:focus { outline: none; border-color: var(--accent-gold); background-color: white; }
+
+        .job-input:focus,
+        .job-select:focus,
+        .job-textarea:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            background-color: white;
+        }
 
         /* File Upload */
         .file-drop-area {
-            border: 2px dashed var(--border-gray); border-radius: 8px; padding: 2rem;
-            text-align: center; cursor: pointer; background-color: var(--bg-gray-50);
+            border: 2px dashed var(--border-gray);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            background-color: var(--bg-gray-50);
             transition: all var(--transition-base);
         }
-        .file-drop-area:hover, .file-drop-area.drag-active { border-color: var(--accent-gold); background-color: rgba(201, 168, 96, 0.05); }
-        .file-drop-area i { font-size: 2rem; color: var(--text-light); margin-bottom: 0.5rem; }
-        .file-name { margin-top: 0.5rem; font-weight: 600; color: var(--primary-navy); font-size: 0.9rem; }
+
+        .file-drop-area:hover,
+        .file-drop-area.drag-active {
+            border-color: var(--accent-gold);
+            background-color: rgba(201, 168, 96, 0.05);
+        }
+
+        .file-drop-area i {
+            font-size: 2rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .file-name {
+            margin-top: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-navy);
+            font-size: 0.9rem;
+        }
 
         /* Job Cards & Listings */
-        .job-filters { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
-        .search-box { flex: 1; position: relative; }
-        .search-box i { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-light); }
-        .search-input { width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border-radius: 50px; border: 1px solid var(--border-gray); }
-        .filter-select { padding: 0.75rem 2rem 0.75rem 1.5rem; border-radius: 50px; border: 1px solid var(--border-gray); cursor: pointer; }
+        .job-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border-gray);
+        }
+
+        .filter-select {
+            padding: 0.75rem 2rem 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border-gray);
+            cursor: pointer;
+        }
 
         .job-card {
-            background: white; border: 1px solid var(--border-gray); border-radius: 12px; padding: 1.5rem;
-            margin-bottom: 1rem; cursor: pointer; transition: all var(--transition-base);
+            background: white;
+            border: 1px solid var(--border-gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all var(--transition-base);
         }
-        .job-card:hover { border-color: var(--accent-gold); transform: translateY(-3px); box-shadow: var(--shadow-md); }
-        .job-card-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem; }
-        .job-tag { background: var(--bg-gray-100); color: var(--text-gray); padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600; }
-        .job-meta { display: flex; gap: 1rem; font-size: 0.875rem; color: var(--text-gray); margin-top: 0.5rem; }
-        .job-meta i { color: var(--accent-gold); margin-right: 0.25rem; }
+
+        .job-card:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .job-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-tag {
+            background: var(--bg-gray-100);
+            color: var(--text-gray);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .job-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-gray);
+            margin-top: 0.5rem;
+        }
+
+        .job-meta i {
+            color: var(--accent-gold);
+            margin-right: 0.25rem;
+        }
 
         /* Views */
-        .modal-view { display: none; animation: fadeIn 0.3s ease-out; }
-        .modal-view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-view {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
 
-        .back-btn { background: none; border: none; color: var(--text-gray); cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; }
-        .back-btn:hover { color: var(--primary-navy); }
+        .modal-view.active {
+            display: block;
+        }
 
-        .job-actions { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem; border-top: 1px solid var(--border-gray); padding-top: 1.5rem; }
-        
-        .status-msg { margin-top: 1rem; padding: 1rem; border-radius: 8px; display: none; text-align: center; }
-        .status-msg.error { background-color: #fef2f2; color: var(--error-red); display: block; }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-gray);
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .back-btn:hover {
+            color: var(--primary-navy);
+        }
+
+        .job-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            border-top: 1px solid var(--border-gray);
+            padding-top: 1.5rem;
+        }
+
+        .status-msg {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+            text-align: center;
+        }
+
+        .status-msg.error {
+            background-color: #fef2f2;
+            color: var(--error-red);
+            display: block;
+        }
+
+        /* FEE DISCLAIMER */
+        .fee-disclaimer {
+            background-color: rgba(201, 168, 96, 0.1);
+            border-left: 4px solid var(--accent-gold);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            border-radius: 0 4px 4px 0;
+            display: flex;
+            align-items: start;
+            gap: 10px;
+        }
+
+        .fee-disclaimer strong {
+            color: var(--primary-navy);
+        }
     </style>
-<link rel="stylesheet" href="/index.css">
+    <link rel="stylesheet" href="/index.css">
 </head>
+
 <body>
     <nav class="navbar">
         <div class="nav-container">
             <a href="#" class="nav-logo">
-                <img src="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/ERLogo70.svg" alt="Eligo Recruitment Logo">
+                <img src="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/ERLogo70.svg"
+                    alt="Eligo Recruitment Logo">
             </a>
             <ul class="nav-menu">
                 <li><a href="#home">Home</a></li>
@@ -1485,11 +1985,7 @@
 
                 <!-- Jobs Dropdown Menu -->
                 <li class="nav-dropdown">
-                    <button
-                        class="dropdown-trigger"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                        aria-label="Jobs menu">
+                    <button class="dropdown-trigger" aria-haspopup="true" aria-expanded="false" aria-label="Jobs menu">
                         Jobs
                         <i class="fas fa-chevron-down chevron"></i>
                     </button>
@@ -1524,11 +2020,16 @@
                 <span class="hero-title__recruitment">RECRUITMENT</span>
             </h1>
             <p class="hero-tagline">ENHANCING CAREERS, ENRICHING COMPANIES</p>
-            <p>We're a recruitment agency redefining the hiring experience. We believe the right job transforms a person, and the right person transforms a business. Let us connect you with opportunities that matter.</p>
+            <p>We're a recruitment agency redefining the hiring experience. We believe the right job transforms a
+                person, and the right person transforms a business. Let us connect you with opportunities that matter.
+            </p>
             <div class="hero-buttons">
                 <!-- Added ID for apply modal trigger -->
-                <a href="#apply-job" id="hero-cta-apply" class="btn btn-primary">Browse Jobs <i class="fas fa-arrow-right"></i></a>
-                <a href="#services" class="btn btn-secondary">Our Services</a>
+                <a href="#apply-job" id="hero-cta-apply" class="btn btn-primary">Browse Jobs <i
+                        class="fas fa-arrow-right"></i></a>
+                <!-- UPDATED BUTTON: LIST A JOB -->
+                <a href="#list-job" id="hero-cta-list" class="btn btn-secondary">List A Job <i
+                        class="fas fa-plus-circle"></i></a>
             </div>
             <div class="hero-stats">
                 <div class="hero-stat">
@@ -1551,6 +2052,7 @@
         </div>
     </section>
 
+    <!-- ... (Middle sections kept same for brevity, showing modification below) ... -->
     <section id="about" class="about">
         <div class="container">
             <div class="section-header">
@@ -1561,13 +2063,22 @@
             <div class="about-grid">
                 <div class="about-content">
                     <h3>Who We Are</h3>
-                    <p>Eligo Recruitment began as a candidate placement agency, evolving into a comprehensive recruitment solutions provider. Today, we're proud to serve organizations across the private and public sectors, helping them build exceptional teams.</p>
-                    <p>Our mission is simple: ensure mutual satisfaction. We match candidates with organizations where they'll flourish as individuals while driving company growth. Every placement we make is a partnership built on understanding, trust, and shared success.</p>
-                    <p>With a proven track record of successful placements and a deep understanding of the African talent landscape, we're uniquely positioned to meet your recruitment needs with precision and care.</p>
+                    <p>Eligo Recruitment began as a candidate placement agency, evolving into a comprehensive
+                        recruitment solutions provider. Today, we're proud to serve organizations across the private and
+                        public sectors, helping them build exceptional teams.</p>
+                    <p>Our mission is simple: ensure mutual satisfaction. We match candidates with organizations where
+                        they'll flourish as individuals while driving company growth. Every placement we make is a
+                        partnership built on understanding, trust, and shared success.</p>
+                    <p>With a proven track record of successful placements and a deep understanding of the African
+                        talent landscape, we're uniquely positioned to meet your recruitment needs with precision and
+                        care.</p>
                     <a href="#contact" class="btn btn-primary">Partner With Us</a>
                 </div>
                 <div class="about-image">
-                    <img src="https://images.pexels.com/photos/9870144/pexels-photo-9870144.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Professional team collaboration">
+                    <img src="https://images.pexels.com/photos/9870144/pexels-photo-9870144.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                        alt="Professional team collaboration">
+                    <!-- Testimonials will be injected here via JS -->
+                    <div id="testimonials-container" class="testimonials-overlay"></div>
                 </div>
             </div>
         </div>
@@ -1578,19 +2089,22 @@
             <div class="section-header">
                 <span class="section-label">What We Do</span>
                 <h2>Comprehensive Recruitment Solutions</h2>
-                <p>From executive search to talent acquisition, we deliver tailored recruitment services that drive your business forward.</p>
+                <p>From executive search to talent acquisition, we deliver tailored recruitment services that drive your
+                    business forward.</p>
             </div>
             <div class="services-grid">
                 <div class="service-card">
                     <div class="service-image">
-                        <img src="https://images.pexels.com/photos/8069758/pexels-photo-8069758.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Executive Search">
+                        <img src="https://images.pexels.com/photos/8069758/pexels-photo-8069758.jpeg?auto=compress&cs=tinysrgb&w=800"
+                            alt="Executive Search">
                         <div class="service-overlay">
                             <i class="fas fa-search service-icon"></i>
                         </div>
                     </div>
                     <div class="service-content">
                         <h3>Executive Search</h3>
-                        <p>We conduct thorough searches to identify and attract top-tier executives who align perfectly with your company's vision, culture, and strategic objectives.</p>
+                        <p>We conduct thorough searches to identify and attract top-tier executives who align perfectly
+                            with your company's vision, culture, and strategic objectives.</p>
                         <a href="#contact" class="service-link">
                             Learn More <i class="fas fa-arrow-right"></i>
                         </a>
@@ -1599,14 +2113,16 @@
 
                 <div class="service-card">
                     <div class="service-image">
-                        <img src="https://images.pexels.com/photos/5257194/pexels-photo-5257194.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Talent Acquisition">
+                        <img src="https://images.pexels.com/photos/5257194/pexels-photo-5257194.jpeg?auto=compress&cs=tinysrgb&w=800"
+                            alt="Talent Acquisition">
                         <div class="service-overlay">
                             <i class="fas fa-users service-icon"></i>
                         </div>
                     </div>
                     <div class="service-content">
                         <h3>Talent Acquisition</h3>
-                        <p>Our specialized team excels at finding and placing qualified candidates across various industries, ensuring the perfect fit for your organizational needs.</p>
+                        <p>Our specialized team excels at finding and placing qualified candidates across various
+                            industries, ensuring the perfect fit for your organizational needs.</p>
                         <a href="#contact" class="service-link">
                             Learn More <i class="fas fa-arrow-right"></i>
                         </a>
@@ -1615,14 +2131,16 @@
 
                 <div class="service-card">
                     <div class="service-image">
-                        <img src="https://images.pexels.com/photos/699459/pexels-photo-699459.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Background Screening">
+                        <img src="https://images.pexels.com/photos/699459/pexels-photo-699459.jpeg?auto=compress&cs=tinysrgb&w=800"
+                            alt="Background Screening">
                         <div class="service-overlay">
                             <i class="fas fa-user-check service-icon"></i>
                         </div>
                     </div>
                     <div class="service-content">
                         <h3>Background Screening</h3>
-                        <p>We perform comprehensive background checks and reference verification to ensure the credibility and reliability of potential candidates.</p>
+                        <p>We perform comprehensive background checks and reference verification to ensure the
+                            credibility and reliability of potential candidates.</p>
                         <a href="#contact" class="service-link">
                             Learn More <i class="fas fa-arrow-right"></i>
                         </a>
@@ -1631,14 +2149,16 @@
 
                 <div class="service-card">
                     <div class="service-image">
-                        <img src="https://images.pexels.com/photos/9488843/pexels-photo-9488843.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Offer Negotiation">
+                        <img src="https://images.pexels.com/photos/9488843/pexels-photo-9488843.jpeg?auto=compress&cs=tinysrgb&w=800"
+                            alt="Offer Negotiation">
                         <div class="service-overlay">
                             <i class="fas fa-handshake service-icon"></i>
                         </div>
                     </div>
                     <div class="service-content">
                         <h3>Offer Negotiation</h3>
-                        <p>We facilitate competitive offer negotiations that satisfy both candidates and clients, ensuring successful placements and long-term satisfaction.</p>
+                        <p>We facilitate competitive offer negotiations that satisfy both candidates and clients,
+                            ensuring successful placements and long-term satisfaction.</p>
                         <a href="#contact" class="service-link">
                             Learn More <i class="fas fa-arrow-right"></i>
                         </a>
@@ -1647,14 +2167,16 @@
 
                 <div class="service-card">
                     <div class="service-image">
-                        <img src="https://images.pexels.com/photos/4990533/pexels-photo-4990533.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Market Mapping">
+                        <img src="https://images.pexels.com/photos/4990533/pexels-photo-4990533.jpeg?auto=compress&cs=tinysrgb&w=800"
+                            alt="Market Mapping">
                         <div class="service-overlay">
                             <i class="fas fa-chart-line service-icon"></i>
                         </div>
                     </div>
                     <div class="service-content">
                         <h3>Market Mapping</h3>
-                        <p>We identify potential industries and organizations where suitable candidates may be found, enabling strategic and direct sourcing initiatives.</p>
+                        <p>We identify potential industries and organizations where suitable candidates may be found,
+                            enabling strategic and direct sourcing initiatives.</p>
                         <a href="#contact" class="service-link">
                             Learn More <i class="fas fa-arrow-right"></i>
                         </a>
@@ -1663,14 +2185,16 @@
 
                 <div class="service-card">
                     <div class="service-image">
-                        <img src="https://images.pexels.com/photos/7688336/pexels-photo-7688336.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Recruitment Consulting">
+                        <img src="https://images.pexels.com/photos/7688336/pexels-photo-7688336.jpeg?auto=compress&cs=tinysrgb&w=800"
+                            alt="Recruitment Consulting">
                         <div class="service-overlay">
                             <i class="fas fa-briefcase service-icon"></i>
                         </div>
                     </div>
                     <div class="service-content">
                         <h3>Recruitment Consulting</h3>
-                        <p>We provide expert advice on recruitment strategies, talent management, and organizational development to optimize your hiring processes.</p>
+                        <p>We provide expert advice on recruitment strategies, talent management, and organizational
+                            development to optimize your hiring processes.</p>
                         <a href="#contact" class="service-link">
                             Learn More <i class="fas fa-arrow-right"></i>
                         </a>
@@ -1685,17 +2209,20 @@
             <div class="section-header">
                 <span class="section-label">How We Work</span>
                 <h2>Our Proven Process</h2>
-                <p>A structured, transparent approach that ensures we find the perfect talent match for your organization.</p>
+                <p>A structured, transparent approach that ensures we find the perfect talent match for your
+                    organization.</p>
             </div>
             <div class="process-container">
                 <div class="process-step">
                     <div class="process-visual">
-                        <img src="https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Discovery Phase">
+                        <img src="https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                            alt="Discovery Phase">
                         <div class="process-number">01</div>
                     </div>
                     <div class="process-details">
                         <h3><i class="fas fa-compass"></i> Discovery</h3>
-                        <p>We begin by deeply understanding your organization's culture, values, and specific role requirements. This foundational step ensures alignment from the start.</p>
+                        <p>We begin by deeply understanding your organization's culture, values, and specific role
+                            requirements. This foundational step ensures alignment from the start.</p>
                         <div class="process-features">
                             <div class="process-feature">
                                 <i class="fas fa-check-circle"></i>
@@ -1715,12 +2242,14 @@
 
                 <div class="process-step">
                     <div class="process-visual">
-                        <img src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Strategy Development">
+                        <img src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                            alt="Strategy Development">
                         <div class="process-number">02</div>
                     </div>
                     <div class="process-details">
                         <h3><i class="fas fa-chess"></i> Strategy</h3>
-                        <p>We develop a tailored recruitment strategy based on your unique needs, market conditions, and the competitive landscape of your industry.</p>
+                        <p>We develop a tailored recruitment strategy based on your unique needs, market conditions, and
+                            the competitive landscape of your industry.</p>
                         <div class="process-features">
                             <div class="process-feature">
                                 <i class="fas fa-check-circle"></i>
@@ -1740,12 +2269,14 @@
 
                 <div class="process-step">
                     <div class="process-visual">
-                        <img src="https://images.pexels.com/photos/3184325/pexels-photo-3184325.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Candidate Sourcing">
+                        <img src="https://images.pexels.com/photos/3184325/pexels-photo-3184325.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                            alt="Candidate Sourcing">
                         <div class="process-number">03</div>
                     </div>
                     <div class="process-details">
                         <h3><i class="fas fa-network-wired"></i> Sourcing</h3>
-                        <p>Our team actively sources and screens potential candidates through various channels, leveraging our extensive network and industry expertise.</p>
+                        <p>Our team actively sources and screens potential candidates through various channels,
+                            leveraging our extensive network and industry expertise.</p>
                         <div class="process-features">
                             <div class="process-feature">
                                 <i class="fas fa-check-circle"></i>
@@ -1765,12 +2296,14 @@
 
                 <div class="process-step">
                     <div class="process-visual">
-                        <img src="https://images.pexels.com/photos/5668772/pexels-photo-5668772.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Selection Process">
+                        <img src="https://images.pexels.com/photos/5668772/pexels-photo-5668772.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                            alt="Selection Process">
                         <div class="process-number">04</div>
                     </div>
                     <div class="process-details">
                         <h3><i class="fas fa-clipboard-check"></i> Selection</h3>
-                        <p>We present you with a curated shortlist of qualified candidates and facilitate comprehensive interviews to ensure the best match.</p>
+                        <p>We present you with a curated shortlist of qualified candidates and facilitate comprehensive
+                            interviews to ensure the best match.</p>
                         <div class="process-features">
                             <div class="process-feature">
                                 <i class="fas fa-check-circle"></i>
@@ -1790,12 +2323,14 @@
 
                 <div class="process-step">
                     <div class="process-visual">
-                        <img src="https://images.pexels.com/photos/3184286/pexels-photo-3184286.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Placement">
+                        <img src="https://images.pexels.com/photos/3184286/pexels-photo-3184286.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                            alt="Placement">
                         <div class="process-number">05</div>
                     </div>
                     <div class="process-details">
                         <h3><i class="fas fa-file-contract"></i> Placement</h3>
-                        <p>We assist with offer negotiation and ensure a smooth onboarding process for both the candidate and your organization.</p>
+                        <p>We assist with offer negotiation and ensure a smooth onboarding process for both the
+                            candidate and your organization.</p>
                         <div class="process-features">
                             <div class="process-feature">
                                 <i class="fas fa-check-circle"></i>
@@ -1815,12 +2350,14 @@
 
                 <div class="process-step">
                     <div class="process-visual">
-                        <img src="https://images.pexels.com/photos/7446591/pexels-photo-7446591.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Follow-up">
+                        <img src="https://images.pexels.com/photos/7446591/pexels-photo-7446591.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                            alt="Follow-up">
                         <div class="process-number">06</div>
                     </div>
                     <div class="process-details">
                         <h3><i class="fas fa-comments"></i> Follow-up</h3>
-                        <p>We maintain contact to ensure satisfaction on both sides and address any post-placement needs, fostering long-term success.</p>
+                        <p>We maintain contact to ensure satisfaction on both sides and address any post-placement
+                            needs, fostering long-term success.</p>
                         <div class="process-features">
                             <div class="process-feature">
                                 <i class="fas fa-check-circle"></i>
@@ -1850,22 +2387,54 @@
             </div>
             <div class="carousel-wrapper">
                 <div class="carousel-track">
-                    <div class="client-card"><img src="https://z-cdn-media.chatglm.cn/files/7e7eb499-3fae-45ad-9349-f99ea8f8219f_Apptivate%29.jpg?auth_key=1790473452-c27b03f5c3bc403aa048f5de68444309-0-e2a4cabcdcfb555b6d8af0562f6ae807" alt="Apptivate.Africa"></div>
-                    <div class="client-card"><img src="https://z-cdn-media.chatglm.cn/files/483fe4e8-7f8d-4531-99e1-0a4daa24adba_haulers.jpeg?auth_key=1790473452-9367fe646339479cbcad0dc8dfb4c916-0-e1c13d7439fb6726edc23a268a70a708" alt="Multiple Hauliers"></div>
-                    <div class="client-card"><img src="https://z-cdn-media.chatglm.cn/files/4929552c-9a1f-4688-9b38-866d2236457d_impala%20glass.jpg?auth_key=1790473452-f353df8db3224a688d57dd2e21ff000b-0-d186a6b73e132ce837ecbd3b644ca474" alt="Impala Glass"></div>
-                    <div class="client-card"><img src="https://z-cdn-media.chatglm.cn/files/e5808b00-7e8f-467c-b892-9f1d22aa92be_maxider.jpg?auth_key=1790473452-21ad85212e684208ba6c3c81472f7c09-0-9f54cfdc69d0cddabaf7a313f29f0719" alt="Maxider"></div>
-                    <div class="client-card"><img src="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/ramsas.%20(Website)_.png" alt="RAMSA"></div>
-                    <div class="client-card"><img src="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/cloudit.png" alt="CloudIT"></div>
-                    <div class="client-card"><img src="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/harir.png" alt="Harir International"></div>
-                    <div class="client-card"><img src="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/vizx.png" alt="VizX Global"></div>
-                    <div class="client-card"><img src="https://z-cdn-media.chatglm.cn/files/7e7eb499-3fae-45ad-9349-f99ea8f8219f_Apptivate%29.jpg?auth_key=1790473452-c27b03f5c3bc403aa048f5de68444309-0-e2a4cabcdcfb555b6d8af0562f6ae807" alt="Apptivate.Africa"></div>
-                    <div class="client-card"><img src="https://z-cdn-media.chatglm.cn/files/483fe4e8-7f8d-4531-99e1-0a4daa24adba_haulers.jpeg?auth_key=1790473452-9367fe646339479cbcad0dc8dfb4c916-0-e1c13d7439fb6726edc23a268a70a708" alt="Multiple Hauliers"></div>
-                    <div class="client-card"><img src="https://z-cdn-media.chatglm.cn/files/4929552c-9a1f-4688-9b38-866d2236457d_impala%20glass.jpg?auth_key=1790473452-f353df8db3224a688d57dd2e21ff000b-0-d186a6b73e132ce837ecbd3b644ca474" alt="Impala Glass"></div>
-                    <div class="client-card"><img src="https://z-cdn-media.chatglm.cn/files/e5808b00-7e8f-467c-b892-9f1d22aa92be_maxider.jpg?auth_key=1790473452-21ad85212e684208ba6c3c81472f7c09-0-9f54cfdc69d0cddabaf7a313f29f0719" alt="Maxider"></div>
-                    <div class="client-card"><img src="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/ramsas.%20(Website)_.png" alt="RAMSA"></div>
-                    <div class="client-card"><img src="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/cloudit.png" alt="CloudIT"></div>
-                    <div class="client-card"><img src="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/harir.png" alt="Harir International"></div>
-                    <div class="client-card"><img src="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/vizx.png" alt="VizX Global"></div>
+                    <div class="client-card"><img
+                            src="https://z-cdn-media.chatglm.cn/files/7e7eb499-3fae-45ad-9349-f99ea8f8219f_Apptivate%29.jpg?auth_key=1790473452-c27b03f5c3bc403aa048f5de68444309-0-e2a4cabcdcfb555b6d8af0562f6ae807"
+                            alt="Apptivate.Africa"></div>
+                    <div class="client-card"><img
+                            src="https://z-cdn-media.chatglm.cn/files/483fe4e8-7f8d-4531-99e1-0a4daa24adba_haulers.jpeg?auth_key=1790473452-9367fe646339479cbcad0dc8dfb4c916-0-e1c13d7439fb6726edc23a268a70a708"
+                            alt="Multiple Hauliers"></div>
+                    <div class="client-card"><img
+                            src="https://z-cdn-media.chatglm.cn/files/4929552c-9a1f-4688-9b38-866d2236457d_impala%20glass.jpg?auth_key=1790473452-f353df8db3224a688d57dd2e21ff000b-0-d186a6b73e132ce837ecbd3b644ca474"
+                            alt="Impala Glass"></div>
+                    <div class="client-card"><img
+                            src="https://z-cdn-media.chatglm.cn/files/e5808b00-7e8f-467c-b892-9f1d22aa92be_maxider.jpg?auth_key=1790473452-21ad85212e684208ba6c3c81472f7c09-0-9f54cfdc69d0cddabaf7a313f29f0719"
+                            alt="Maxider"></div>
+                    <div class="client-card"><img
+                            src="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/ramsas.%20(Website)_.png"
+                            alt="RAMSA"></div>
+                    <div class="client-card"><img
+                            src="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/cloudit.png"
+                            alt="CloudIT"></div>
+                    <div class="client-card"><img
+                            src="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/harir.png"
+                            alt="Harir International"></div>
+                    <div class="client-card"><img
+                            src="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/vizx.png"
+                            alt="VizX Global"></div>
+                    <div class="client-card"><img
+                            src="https://z-cdn-media.chatglm.cn/files/7e7eb499-3fae-45ad-9349-f99ea8f8219f_Apptivate%29.jpg?auth_key=1790473452-c27b03f5c3bc403aa048f5de68444309-0-e2a4cabcdcfb555b6d8af0562f6ae807"
+                            alt="Apptivate.Africa"></div>
+                    <div class="client-card"><img
+                            src="https://z-cdn-media.chatglm.cn/files/483fe4e8-7f8d-4531-99e1-0a4daa24adba_haulers.jpeg?auth_key=1790473452-9367fe646339479cbcad0dc8dfb4c916-0-e1c13d7439fb6726edc23a268a70a708"
+                            alt="Multiple Hauliers"></div>
+                    <div class="client-card"><img
+                            src="https://z-cdn-media.chatglm.cn/files/4929552c-9a1f-4688-9b38-866d2236457d_impala%20glass.jpg?auth_key=1790473452-f353df8db3224a688d57dd2e21ff000b-0-d186a6b73e132ce837ecbd3b644ca474"
+                            alt="Impala Glass"></div>
+                    <div class="client-card"><img
+                            src="https://z-cdn-media.chatglm.cn/files/e5808b00-7e8f-467c-b892-9f1d22aa92be_maxider.jpg?auth_key=1790473452-21ad85212e684208ba6c3c81472f7c09-0-9f54cfdc69d0cddabaf7a313f29f0719"
+                            alt="Maxider"></div>
+                    <div class="client-card"><img
+                            src="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/ramsas.%20(Website)_.png"
+                            alt="RAMSA"></div>
+                    <div class="client-card"><img
+                            src="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/cloudit.png"
+                            alt="CloudIT"></div>
+                    <div class="client-card"><img
+                            src="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/harir.png"
+                            alt="Harir International"></div>
+                    <div class="client-card"><img
+                            src="https://raw.githubusercontent.com/Samurii-Jack/Eligorecruitment/main/clients/vizx.png"
+                            alt="VizX Global"></div>
                 </div>
             </div>
         </div>
@@ -1897,7 +2466,8 @@
 
                     <div class="form-group">
                         <label for="message">Your Message</label>
-                        <textarea id="message" name="message" required placeholder="Tell us about your recruitment needs..."></textarea>
+                        <textarea id="message" name="message" required
+                            placeholder="Tell us about your recruitment needs..."></textarea>
                     </div>
 
                     <button type="submit" class="btn btn-primary">
@@ -1909,7 +2479,8 @@
 
                 <div class="contact-info">
                     <h3>Contact Information</h3>
-                    <p>Reach out through any of these channels. Our team is ready to discuss your recruitment needs and answer your questions.</p>
+                    <p>Reach out through any of these channels. Our team is ready to discuss your recruitment needs and
+                        answer your questions.</p>
                     <div class="contact-items">
                         <div class="contact-item">
                             <i class="fas fa-phone"></i>
@@ -1922,7 +2493,10 @@
                             <i class="fas fa-envelope"></i>
                             <div class="contact-item-content">
                                 <div class="contact-item-label">Email</div>
-                                <div class="contact-item-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4a23242c250a2f26232d25382f29383f233e272f243e64292564212f">[email&#160;protected]</a></div>
+                                <div class="contact-item-value"><a href="/cdn-cgi/l/email-protection"
+                                        class="__cf_email__"
+                                        data-cfemail="4a23242c250a2f26232d25382f29383f233e272f243e64292564212f">[email&#160;protected]</a>
+                                </div>
                             </div>
                         </div>
                         <div class="contact-item">
@@ -1952,16 +2526,20 @@
                     <h4>Eligo Recruitment</h4>
                     <p>Together, we build brighter futures.</p>
                     <div class="social-icons">
-                        <a href="https://www.facebook.com/Eligo.Recruitment" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                        <a href="https://www.facebook.com/Eligo.Recruitment" target="_blank" rel="noopener noreferrer"
+                            aria-label="Facebook">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="https://x.com/eligo_recruit" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                        <a href="https://x.com/eligo_recruit" target="_blank" rel="noopener noreferrer"
+                            aria-label="Twitter">
                             <i class="fab fa-twitter"></i>
                         </a>
-                        <a href="https://www.linkedin.com/company/eligo-recruitment-ke/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                        <a href="https://www.linkedin.com/company/eligo-recruitment-ke/" target="_blank"
+                            rel="noopener noreferrer" aria-label="LinkedIn">
                             <i class="fab fa-linkedin-in"></i>
                         </a>
-                        <a href="https://www.instagram.com/eligo_recruitment?igsh=eDNwMDRhd3V0amJm&utm_source=qr" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                        <a href="https://www.instagram.com/eligo_recruitment?igsh=eDNwMDRhd3V0amJm&utm_source=qr"
+                            target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                             <i class="fab fa-instagram"></i>
                         </a>
                     </div>
@@ -2021,7 +2599,7 @@
                 <h2>Post a Vacancy</h2>
                 <p>Reach thousands of qualified candidates today.</p>
             </div>
-            
+
             <form id="form-list-job">
                 <!-- Access Key injected via JS -->
                 <input type="hidden" name="subject" value="New Job Listing">
@@ -2098,9 +2676,21 @@
                     </div>
                 </div>
 
+                <!-- ADDED: Fee Disclaimer -->
+                <div class="fee-disclaimer">
+                    <i class="fas fa-info-circle"
+                        style="color: var(--accent-gold); margin-right: 0.5rem; margin-top: 2px;"></i>
+                    <div>
+                        A <strong>$150 non-refundable fee</strong> applies to submit your job listing. By proceeding,
+                        you agree to this charge.
+                    </div>
+                </div>
+
                 <div class="job-actions">
-                    <button type="button" class="btn btn-secondary modal-close-btn" style="color: var(--text-dark); border-color: var(--border-gray);">Cancel</button>
-                    <button type="submit" class="btn btn-primary">List Job</button>
+                    <button type="button" class="btn btn-secondary modal-close-btn"
+                        style="color: var(--text-dark); border-color: var(--border-gray);">Cancel</button>
+                    <!-- UPDATED: Button Text -->
+                    <button type="submit" class="btn btn-primary">List Job ($150)</button>
                 </div>
                 <div class="status-msg"></div>
             </form>
@@ -2111,18 +2701,19 @@
     <div id="modal-apply-job" class="modal-overlay" aria-hidden="true" role="dialog">
         <div class="modal-container">
             <button class="modal-close modal-close-btn">&times;</button>
-            
+
             <!-- View A: Job Listings -->
             <div id="view-listings" class="modal-view active">
                 <div class="modal-header">
                     <h2>Current Opportunities</h2>
                     <p>Find a role that fits your expertise.</p>
                 </div>
-                
+
                 <div class="job-filters">
                     <div class="search-box">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="job-search" placeholder="Search title or company..." class="search-input">
+                        <input type="text" id="job-search" placeholder="Search title or company..."
+                            class="search-input">
                     </div>
                     <select id="job-filter-type" class="filter-select">
                         <option value="all">All Types</option>
@@ -2139,7 +2730,8 @@
 
             <!-- View B: Job Details -->
             <div id="view-details" class="modal-view">
-                <button class="back-btn" onclick="app.switchView('view-listings')"><i class="fas fa-arrow-left"></i> Back to Jobs</button>
+                <button class="back-btn" onclick="app.switchView('view-listings')"><i class="fas fa-arrow-left"></i>
+                    Back to Jobs</button>
                 <div id="job-detail-content">
                     <!-- JS will inject details here -->
                 </div>
@@ -2147,7 +2739,8 @@
 
             <!-- View C: Application Form -->
             <div id="view-application" class="modal-view">
-                <button class="back-btn" onclick="app.switchView('view-details')"><i class="fas fa-arrow-left"></i> Back to Role</button>
+                <button class="back-btn" onclick="app.switchView('view-details')"><i class="fas fa-arrow-left"></i> Back
+                    to Role</button>
                 <div class="modal-header">
                     <h2>Apply Now</h2>
                     <p id="apply-role-title" style="color: var(--accent-gold); font-weight: 600;">Job Title</p>
@@ -2206,7 +2799,8 @@
     <!-- Success Modal -->
     <div id="modal-success" class="modal-overlay">
         <div class="modal-container" style="max-width: 400px; text-align: center; height: auto;">
-            <div style="width: 60px; height: 60px; background: var(--success-green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 1.5rem;">
+            <div
+                style="width: 60px; height: 60px; background: var(--success-green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 1.5rem;">
                 <i class="fas fa-check"></i>
             </div>
             <h2 id="success-title">Success!</h2>
@@ -2215,13 +2809,15 @@
         </div>
     </div>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script>
         // --- 1. CONFIGURATION ---
-        
+
         // -------------------------------------------------------------------------
         // PASTE YOUR PUBLISHED GOOGLE SHEET LINK (TSV format) BELOW
         // -------------------------------------------------------------------------
-        const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRl9nXfkHXdHiZ5OV-Kp8IMMNSp8-nYRUVkFf2Vu80FKaJzm97L7B-wD1USXaNvQnZHWKETjfLr7WeN/pub?output=tsv"; 
+        const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRl9nXfkHXdHiZ5OV-Kp8IMMNSp8-nYRUVkFf2Vu80FKaJzm97L7B-wD1USXaNvQnZHWKETjfLr7WeN/pub?output=tsv";
 
         // -------------------------------------------------------------------------
         // EMAIL CONFIGURATION
@@ -2229,7 +2825,68 @@
         // Step 2: Check your email for the 'Access Key'
         // Step 3: Replace the key below with your NEW key.
         // -------------------------------------------------------------------------
-        const WEB3FORMS_ACCESS_KEY = "a5314a4a-a01b-4127-98eb-883ea3cdf096"; 
+        const WEB3FORMS_ACCESS_KEY = "a5314a4a-a01b-4127-98eb-883ea3cdf096";
+
+        // -------------------------------------------------------------------------
+        // TESTIMONIALS CONFIGURATION
+        // -------------------------------------------------------------------------
+        const TESTIMONIALS = [
+            {
+                text: "Eligo transformed our hiring. We found our CEO in record time.",
+                author: "Sarah J.",
+                role: "HR Director",
+                initials: "SJ"
+            },
+            {
+                text: "Professional, dedicated, and incredibly efficient team.",
+                author: "Mark D.",
+                role: "Tech Lead",
+                initials: "MD"
+            },
+            {
+                text: "Best recruitment experience I've had in 10 years.",
+                author: "Global Logistics",
+                role: "Partner",
+                initials: "GL"
+            }
+        ];
+
+        // --- RENDER TESTIMONIALS ---
+        function renderTestimonials() {
+            const container = document.getElementById('testimonials-container');
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            // Create track for infinite scroll
+            const track = document.createElement('div');
+            track.className = 'testimonial-track';
+
+            // Duplicate content for seamless loop (mock infinite)
+            // We duplicate 4 times to ensure it covers screens comfortably
+            const loopCount = 4;
+
+            for (let i = 0; i < loopCount; i++) {
+                TESTIMONIALS.forEach((t, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'testimonial-card';
+
+                    card.innerHTML = `
+                        <div class="testimonial-text">"${t.text}"</div>
+                        <div class="testimonial-author">
+                            <div class="testimonial-avatar">${t.initials}</div>
+                            <div class="testimonial-info">
+                                <h5>${t.author}</h5>
+                                <span>${t.role}</span>
+                            </div>
+                        </div>
+                    `;
+                    track.appendChild(card);
+                });
+            }
+
+            container.appendChild(track);
+        }
 
         // --- Mock Data (Fallback) ---
         const DEFAULT_JOBS = [
@@ -2281,7 +2938,8 @@
             triggers: {
                 list: document.getElementById('nav-list-job'),
                 apply: document.getElementById('nav-apply-job'),
-                heroApply: document.getElementById('hero-cta-apply')
+                heroApply: document.getElementById('hero-cta-apply'),
+                heroList: document.getElementById('hero-cta-list') // New ID
             },
             views: {
                 listings: document.getElementById('view-listings'),
@@ -2313,13 +2971,13 @@
                     document.body.style.overflow = 'hidden'; // Lock scroll
                 }
             },
-            
+
             closeModal: (modal) => {
                 modal.classList.remove('active');
                 modal.setAttribute('aria-hidden', 'true');
                 document.body.style.overflow = '';
             },
-            
+
             closeAll: () => {
                 document.querySelectorAll('.modal-overlay').forEach(m => app.closeModal(m));
             },
@@ -2329,8 +2987,8 @@
                 dom.views[viewId]?.classList.add('active');
                 // Reset scroll position of container
                 if (dom.modals.apply) {
-                     const container = dom.modals.apply.querySelector('.modal-container');
-                     if (container) container.scrollTop = 0;
+                    const container = dom.modals.apply.querySelector('.modal-container');
+                    if (container) container.scrollTop = 0;
                 }
             },
 
@@ -2386,7 +3044,7 @@
                 const values = rows[i].split('\t');
                 const obj = {};
                 let hasContent = false;
-                
+
                 headers.forEach((header, index) => {
                     const val = values[index] ? values[index].trim() : '';
                     if (val) hasContent = true;
@@ -2413,7 +3071,7 @@
         function renderJobs(data) {
             if (!dom.containers.listings) return;
             dom.containers.listings.innerHTML = '';
-            
+
             if (data.length === 0) {
                 dom.containers.listings.innerHTML = '<p class="text-center" style="color: var(--text-light); padding: 2rem;">No jobs found matching criteria.</p>';
                 return;
@@ -2432,7 +3090,7 @@
                         <span><i class="fas fa-map-marker-alt"></i> ${job.location || 'Remote'}</span>
                         <span><i class="far fa-clock"></i> ${job.deadline || 'Open'}</span>
                     </div>
-                `;
+                    `;
                 div.addEventListener('click', () => loadJobDetails(job));
                 dom.containers.listings.appendChild(div);
             });
@@ -2440,7 +3098,7 @@
 
         function loadJobDetails(job) {
             currentJob = job;
-            
+
             // Handle responsibilities being a string or array
             let responsibilitiesList = '';
             if (Array.isArray(job.responsibilities)) {
@@ -2466,11 +3124,12 @@
                 <p style="color: var(--text-gray); font-size: 0.95rem;">${job.description || job.overview || 'No description provided.'}</p>
                 
                 ${responsibilitiesList ? `<h4 style="margin: 1.5rem 0 0.5rem;">Key Responsibilities</h4>
-                <ul style="padding-left: 1.2rem; color: var(--text-gray); font-size: 0.95rem;">${responsibilitiesList}</ul>` : ''}
-                
-                <div class="job-actions">
-                    <button class="btn btn-primary" id="btn-apply-now">Apply for this Job</button>
-                </div>
+                <ul style="padding-left: 1.2rem; color: var(--text-gray); font-size: 0.95rem;">${responsibilitiesList}</ul>` : ''
+                }
+
+                    <div class="job-actions">
+                        <button class="btn btn-primary" id="btn-apply-now">Apply for this Job</button>
+                    </div>
             `;
 
             document.getElementById('btn-apply-now')?.addEventListener('click', () => {
@@ -2487,7 +3146,7 @@
         // --- Event Listeners ---
 
         // 1. Navigation Triggers
-        if(dom.triggers.list) {
+        if (dom.triggers.list) {
             dom.triggers.list.addEventListener('click', (e) => {
                 e.preventDefault();
                 app.openModal(dom.modals.list);
@@ -2502,13 +3161,21 @@
             app.openModal(dom.modals.apply);
         };
 
-        if(dom.triggers.apply) dom.triggers.apply.addEventListener('click', openApplyModal);
-        if(dom.triggers.heroApply) dom.triggers.heroApply.addEventListener('click', openApplyModal);
+        if (dom.triggers.apply) dom.triggers.apply.addEventListener('click', openApplyModal);
+        if (dom.triggers.heroApply) dom.triggers.heroApply.addEventListener('click', openApplyModal);
+
+        // Listener for the new Hero Button (List A Job)
+        if (dom.triggers.heroList) {
+            dom.triggers.heroList.addEventListener('click', (e) => {
+                e.preventDefault();
+                app.openModal(dom.modals.list);
+            });
+        }
 
         // 2. Close Actions
         document.querySelectorAll('.modal-close, .modal-close-btn, .modal-close-all').forEach(btn => {
             btn.addEventListener('click', () => {
-                if(btn.classList.contains('modal-close-all')) app.closeAll();
+                if (btn.classList.contains('modal-close-all')) app.closeAll();
                 else app.closeModal(btn.closest('.modal-overlay'));
             });
         });
@@ -2528,7 +3195,7 @@
             const filtered = jobs.filter(job => {
                 const title = job.title ? job.title.toLowerCase() : '';
                 const company = job.company ? job.company.toLowerCase() : '';
-                
+
                 const matchText = title.includes(term) || company.includes(term);
                 const matchType = type === 'all' || job.type === type;
                 return matchText && matchType;
@@ -2536,20 +3203,20 @@
             renderJobs(filtered);
         };
 
-        if(dom.filters.search) dom.filters.search.addEventListener('input', filterJobs);
-        if(dom.filters.type) dom.filters.type.addEventListener('change', filterJobs);
+        if (dom.filters.search) dom.filters.search.addEventListener('input', filterJobs);
+        if (dom.filters.type) dom.filters.type.addEventListener('change', filterJobs);
 
         // --- Drag & Drop File Upload ---
 
         function setupFileDrop(areaId) {
             const area = document.getElementById(areaId);
             if (!area) return;
-            
+
             const input = area.querySelector('input[type="file"]');
             const nameDisplay = area.querySelector('.file-name');
 
             area.addEventListener('click', () => input && input.click());
-            
+
             if (input) {
                 input.addEventListener('change', () => {
                     if (input.files && input.files.length && nameDisplay) nameDisplay.textContent = input.files[0].name;
@@ -2626,7 +3293,7 @@
                         method: 'POST',
                         body: formData
                     });
-                    
+
                     // 3. Save Locally (So it appears in the list automatically for this user)
                     const existingLocal = JSON.parse(localStorage.getItem('eligo_custom_jobs') || '[]');
                     existingLocal.push(newJob);
@@ -2640,13 +3307,13 @@
                     btn.innerHTML = originalText;
                     btn.disabled = false;
                     listForm.reset();
-                    app.showSuccess('Job Posted', 'Your listing has been submitted and added to the board!');
+                    app.showSuccess('Job Posted', 'Your listing has been submitted! Our team will review and invoice the $150 listing fee.');
 
                 } catch (error) {
                     console.error(error);
                     btn.innerHTML = originalText;
                     btn.disabled = false;
-                    app.showSuccess('Job Posted', 'Your listing has been added to the board (Email service unavailable).');
+                    app.showSuccess('Job Posted', 'Your listing has been submitted! (Email service unavailable, simulated success).');
                 }
             });
         }
@@ -2671,7 +3338,7 @@
                         method: 'POST',
                         body: formData
                     });
-                    
+
                     btn.innerHTML = originalText;
                     btn.disabled = false;
                     applyForm.reset();
@@ -2811,7 +3478,7 @@
             anchor.addEventListener('click', function (e) {
                 // Modified: Only prevent default if it's NOT a modal trigger
                 const id = this.id;
-                if (id === 'nav-list-job' || id === 'nav-apply-job' || id === 'hero-cta-apply') {
+                if (id === 'nav-list-job' || id === 'nav-apply-job' || id === 'hero-cta-apply' || id === 'hero-cta-list') {
                     e.preventDefault();
                     return;
                 }
@@ -2844,12 +3511,15 @@
         });
 
         // Initialize Jobs on Load
-        document.addEventListener('DOMContentLoaded', fetchJobs);
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchJobs();
+            renderTestimonials();
+        });
 
         const form = document.getElementById('contactForm');
         const formStatus = document.getElementById('formStatus');
 
-        form.addEventListener('submit', async function(e) {
+        form.addEventListener('submit', async function (e) {
             e.preventDefault();
 
             formStatus.classList.add('show');
@@ -2889,6 +3559,7 @@
             }, 5000);
         });
     </script>
-<script type="module" src="/index.tsx"></script>
+
 </body>
+
 </html>
