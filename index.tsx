@@ -7,30 +7,30 @@
 // -------------------------------------------------------------------------
 // CONFIGURATION
 // -------------------------------------------------------------------------
-const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRl9nXfkHXdHiZ5OV-Kp8IMMNSp8-nYRUVkFf2Vu80FKaJzm97L7B-wD1USXaNvQnZHWKETjfLr7WeN/pub?output=tsv"; 
-const WEB3FORMS_ACCESS_KEY = "a5314a4a-a01b-4127-98eb-883ea3cdf096"; 
+const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRl9nXfkHXdHiZ5OV-Kp8IMMNSp8-nYRUVkFf2Vu80FKaJzm97L7B-wD1USXaNvQnZHWKETjfLr7WeN/pub?gid=0&single=true&output=tsv";
+const WEB3FORMS_ACCESS_KEY = "a5314a4a-a01b-4127-98eb-883ea3cdf096";
 
 // -------------------------------------------------------------------------
 // TESTIMONIALS CONFIGURATION (ADD/EDIT NEW TESTIMONIALS HERE)
 // -------------------------------------------------------------------------
 const TESTIMONIALS = [
-    { 
-        text: "Eligo transformed our hiring. We found our CEO in record time.", 
-        author: "Sarah J.", 
-        role: "HR Director", 
-        initials: "SJ" 
+    {
+        text: "Eligo transformed our hiring. We found our CEO in record time.",
+        author: "Sarah J.",
+        role: "HR Director",
+        initials: "SJ"
     },
-    { 
-        text: "Professional, dedicated, and incredibly efficient team.", 
-        author: "Mark D.", 
-        role: "Tech Lead", 
-        initials: "MD" 
+    {
+        text: "Professional, dedicated, and incredibly efficient team.",
+        author: "Mark D.",
+        role: "Tech Lead",
+        initials: "MD"
     },
-    { 
-        text: "Best recruitment experience I've had in 10 years.", 
-        author: "Global Logistics", 
-        role: "Partner", 
-        initials: "GL" 
+    {
+        text: "Best recruitment experience I've had in 10 years.",
+        author: "Global Logistics",
+        role: "Partner",
+        initials: "GL"
     }
 ];
 
@@ -118,13 +118,13 @@ const app = {
             document.body.style.overflow = 'hidden'; // Lock scroll
         }
     },
-    
+
     closeModal: (modal) => {
         modal.classList.remove('active');
         modal.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
     },
-    
+
     closeAll: () => {
         document.querySelectorAll('.modal-overlay').forEach(m => app.closeModal(m));
     },
@@ -134,8 +134,8 @@ const app = {
         dom.views[viewId]?.classList.add('active');
         // Reset scroll position of container
         if (dom.modals.apply) {
-             const container = dom.modals.apply.querySelector('.modal-container');
-             if (container) container.scrollTop = 0;
+            const container = dom.modals.apply.querySelector('.modal-container');
+            if (container) container.scrollTop = 0;
         }
     },
 
@@ -155,22 +155,22 @@ const app = {
 // --- RENDER TESTIMONIALS ---
 function renderTestimonials() {
     if (!dom.containers.testimonials) return;
-    
+
     dom.containers.testimonials.innerHTML = '';
-    
+
     // Create track for infinite scroll
     const track = document.createElement('div');
     track.className = 'testimonial-track';
 
     // Duplicate content for seamless loop (mock infinite)
     // We duplicate 4 times to ensure it covers screens comfortably
-    const loopCount = 4; 
-    
+    const loopCount = 4;
+
     for (let i = 0; i < loopCount; i++) {
         TESTIMONIALS.forEach((t, index) => {
             const card = document.createElement('div');
             card.className = 'testimonial-card';
-            
+
             card.innerHTML = `
                 <div class="testimonial-text">"${t.text}"</div>
                 <div class="testimonial-author">
@@ -191,57 +191,128 @@ function renderTestimonials() {
 // --- DATA FETCHING & MANAGEMENT ---
 
 async function fetchJobs() {
-    let combinedJobs = [...DEFAULT_JOBS];
+    let allJobs: any[] = [];
+    console.log('%c--- fetchJobs started ---', 'color: #c9a860; font-weight: bold;');
 
-    // 1. Fetch from Google Sheet (if configured)
-    if (GOOGLE_SHEET_URL) {
+    // Protocol check for local file security
+    const isLocalFile = window.location.protocol === 'file:';
+
+    // 1. Fetch from Google Sheet (Prioritize these)
+    if (GOOGLE_SHEET_URL && !isLocalFile) {
         try {
-            const response = await fetch(GOOGLE_SHEET_URL);
+            // Add cache buster
+            const sheetUrl = GOOGLE_SHEET_URL + (GOOGLE_SHEET_URL.includes('?') ? '&' : '?') + 'cb=' + Date.now();
+            console.log('Fetching Google Sheet:', sheetUrl);
+
+            const response = await fetch(sheetUrl);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
             const data = await response.text();
+            console.log('Raw Sheet data received. Bytes:', data.length);
+
             const sheetJobs = parseTSV(data);
+            console.log(`%cSuccessfully loaded ${sheetJobs.length} jobs from Google Sheet`, 'color: #10b981; font-weight: bold;');
+
             if (sheetJobs.length > 0) {
-                combinedJobs = sheetJobs; // Prefer sheet over default if sheet exists
+                allJobs = [...allJobs, ...sheetJobs];
             }
         } catch (error) {
-            console.error("Error fetching Google Sheet:", error);
+            console.error("Critical error fetching Google Sheet:", error);
         }
     }
 
-    // 2. Fetch Locally Submitted Jobs (from LocalStorage)
-    const localJobs = JSON.parse(localStorage.getItem('eligo_custom_jobs') || '[]');
-    combinedJobs = [...localJobs, ...combinedJobs];
+    // 2. Fetch from Supabase
+    if (supabaseClient) {
+        try {
+            const { data, error } = await (supabaseClient as any).from('jobs').select('*').order('created_at', { ascending: false });
+            if (error) throw error;
 
-    jobs = combinedJobs;
+            if (data) {
+                console.log('Supabase raw data count:', data.length);
+                const normalizedData = data.map((job: any) => {
+                    const normalized: any = {};
+                    Object.keys(job).forEach(k => {
+                        normalized[k.toLowerCase()] = job[k];
+                    });
+                    return normalized;
+                });
+                allJobs = [...allJobs, ...normalizedData];
+                console.log('Jobs added from Supabase:', normalizedData.length);
+            }
+        } catch (e) {
+            console.warn('Supabase jobs fetch failed:', e);
+        }
+    }
+
+    // Fallback to defaults
+    if (allJobs.length === 0) {
+        console.log('No jobs found in Sheet or Supabase, using defaults.');
+        allJobs = [...DEFAULT_JOBS];
+    }
+
+    // 3. Fetch Locally Submitted Jobs
+    const localJobs = JSON.parse(localStorage.getItem('eligo_custom_jobs') || '[]');
+    console.log('Local storage jobs found:', localJobs.length);
+
+    jobs = [...localJobs, ...allJobs];
+    console.log('Total combined jobs:', jobs.length);
     renderJobs(jobs);
 }
 
 // Simple TSV Parser for Google Sheets
-function parseTSV(tsvText) {
+function parseTSV(tsvText: string) {
+    if (!tsvText) return [];
+
+    // Handle UTF-8 BOM if present
+    if (tsvText.charCodeAt(0) === 0xFEFF) {
+        tsvText = tsvText.substring(1);
+    }
+
     const rows = tsvText.split(/\r?\n/);
-    const headers = rows[0].split('\t').map(h => h.toLowerCase().trim());
-    const result = [];
+    if (rows.length < 1) return [];
+
+    // Robust header extraction
+    const headers = rows[0].split('\t').map(h => h.trim().toLowerCase());
+    console.log('Detected Sheet Headers:', headers);
+
+    const result: any[] = [];
 
     for (let i = 1; i < rows.length; i++) {
-        if (!rows[i].trim()) continue;
+        const row = rows[i].trim();
+        if (!row) continue;
+
         const values = rows[i].split('\t');
         const obj: any = {};
         let hasContent = false;
-        
+
         headers.forEach((header, index) => {
-            const val = values[index] ? values[index].trim() : '';
+            let val = (values[index] || '').trim();
             if (val) hasContent = true;
+
+            // Map Sheet Headers to App Keys
+            let key = header;
+            if (header === 'requirements' || header === 'responsibilities') key = 'responsibilities';
+            if (header === 'salary range' || header === 'salary') key = 'salary';
+
+            // Standardize keys
+            if (header === 'job title' || header === 'title') key = 'title';
+            if (header === 'job description' || header === 'description') key = 'description';
+
             // Handle list conversion for responsibilities
-            if (header === 'responsibilities' || header === 'qualifications') {
-                obj[header] = val.split(',').map(item => item.trim());
+            if (key === 'responsibilities' || key === 'qualifications') {
+                obj[key] = val.split(/[,\n|•]/).map(item => item.trim()).filter(item => item.length > 0);
             } else {
-                obj[header] = val;
+                obj[key] = val;
             }
         });
 
+        // Standardize ID
         if (!obj.id) obj.id = 'sheet_' + i;
-        if (!obj.responsibilities) obj.responsibilities = [];
+        if (!obj.title && obj.job_title) obj.title = obj.job_title;
 
-        if (hasContent) result.push(obj);
+        if (hasContent && (obj.title || obj.id)) {
+            result.push(obj);
+        }
     }
     return result;
 }
@@ -251,7 +322,7 @@ function parseTSV(tsvText) {
 function renderJobs(data) {
     if (!dom.containers.listings) return;
     dom.containers.listings.innerHTML = '';
-    
+
     if (data.length === 0) {
         dom.containers.listings.innerHTML = '<p class="text-center" style="color: var(--text-light); padding: 2rem;">No jobs found matching criteria.</p>';
         return;
@@ -260,15 +331,27 @@ function renderJobs(data) {
     data.forEach(job => {
         const div = document.createElement('div');
         div.className = 'job-card';
+
+        // Defensive access for title (handle Title, title, job_title etc)
+        const displayTitle = job.title || job.Title || job.job_title || job.JobTitle || 'Untitled Role';
+        const displayType = job.type || job.Type || 'Full-time';
+        const displayCompany = job.company || job.Company || 'Confidential';
+        const displayLocation = job.location || job.Location || 'Remote';
+        const displayDeadline = job.deadline || job.Deadline || 'Open';
+
+        // Defensive access for salary
+        const displaySalary = job.salary || job.Salary || job.salary_range || job['salary range'] || 'Competitive';
+
         div.innerHTML = `
             <div class="job-card-header">
-                <h3 style="font-size: 1.1rem; color: var(--primary-navy);">${job.title || 'Untitled Role'}</h3>
-                <span class="job-tag">${job.type || 'Full-time'}</span>
+                <h3 style="font-size: 1.1rem; color: var(--primary-navy);">${displayTitle}</h3>
+                <span class="job-tag">${displayType}</span>
             </div>
-            <div style="font-weight: 500; color: var(--text-gray); font-size: 0.95rem;">${job.company || 'Confidential'}</div>
+            <div style="font-weight: 500; color: var(--text-gray); font-size: 0.95rem;">${displayCompany}</div>
             <div class="job-meta">
-                <span><i class="fas fa-map-marker-alt"></i> ${job.location || 'Remote'}</span>
-                <span><i class="far fa-clock"></i> ${job.deadline || 'Open'}</span>
+                <span><i class="fas fa-map-marker-alt"></i> ${displayLocation}</span>
+                <span><i class="far fa-clock"></i> ${displayDeadline}</span>
+                <span style="color: var(--accent-gold); font-weight: 600;"><i class="fas fa-money-bill-wave"></i> ${displaySalary}</span>
             </div>
         `;
         div.addEventListener('click', () => loadJobDetails(job));
@@ -278,29 +361,36 @@ function renderJobs(data) {
 
 function loadJobDetails(job) {
     currentJob = job;
-    
+
+    // Defensive access for details
+    const displayTitle = job.title || job.Title || job.job_title || job.JobTitle || 'Untitled Role';
+    const displayCompany = job.company || job.Company || 'Confidential';
+    const displayLocation = job.location || job.Location || 'Remote';
+    const displayDescription = job.description || job.Overview || job.Overview || job.Description || 'No description provided.';
+    const responsibilities = job.responsibilities || job.Responsibilities || job.requirements || job.Requirements || [];
+
     // Handle responsibilities being a string or array
     let responsibilitiesList = '';
-    if (Array.isArray(job.responsibilities)) {
-        responsibilitiesList = job.responsibilities.map(i => `<li>${i}</li>`).join('');
-    } else if (typeof job.responsibilities === 'string') {
-        responsibilitiesList = job.responsibilities.split(/\n|•/).filter(i => i.trim().length > 0).map(i => `<li>${i}</li>`).join('');
+    if (Array.isArray(responsibilities)) {
+        responsibilitiesList = responsibilities.map(i => `<li>${i}</li>`).join('');
+    } else if (typeof responsibilities === 'string') {
+        responsibilitiesList = responsibilities.split(/\n|•/).filter(i => i.trim().length > 0).map(i => `<li>${i}</li>`).join('');
     }
 
     if (!dom.containers.details) return;
 
     dom.containers.details.innerHTML = `
         <div style="border-bottom: 1px solid var(--border-gray); padding-bottom: 1rem; margin-bottom: 1.5rem;">
-            <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">${job.title}</h2>
+            <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">${displayTitle}</h2>
             <div style="display:flex; gap: 1rem; color: var(--text-gray); font-size: 0.9rem;">
-                <span>${job.company}</span>
+                <span>${displayCompany}</span>
                 <span>&bull;</span>
-                <span>${job.location}</span>
+                <span>${displayLocation}</span>
             </div>
         </div>
         
         <h4 style="margin: 1rem 0 0.5rem;">Overview</h4>
-        <p style="color: var(--text-gray); font-size: 0.95rem;">${job.description || job.overview || 'No description provided.'}</p>
+        <p style="color: var(--text-gray); font-size: 0.95rem;">${displayDescription}</p>
         
         ${responsibilitiesList ? `<h4 style="margin: 1.5rem 0 0.5rem;">Key Responsibilities</h4>
         <ul style="padding-left: 1.2rem; color: var(--text-gray); font-size: 0.95rem;">${responsibilitiesList}</ul>` : ''}
@@ -312,9 +402,9 @@ function loadJobDetails(job) {
 
     document.getElementById('btn-apply-now')?.addEventListener('click', () => {
         const titleEl = document.getElementById('apply-role-title');
-        if (titleEl) titleEl.textContent = job.title;
+        if (titleEl) titleEl.textContent = displayTitle;
         const idInput = document.getElementById('app-job-id') as HTMLInputElement;
-        if (idInput) idInput.value = job.id.toString();
+        if (idInput) idInput.value = displayTitle; // Ensure normalized title is used
         app.switchView('application');
     });
 
@@ -324,7 +414,7 @@ function loadJobDetails(job) {
 // --- Event Listeners ---
 
 // 1. Navigation Triggers
-if(dom.triggers.list) {
+if (dom.triggers.list) {
     dom.triggers.list.addEventListener('click', (e) => {
         e.preventDefault();
         app.openModal(dom.modals.list);
@@ -338,21 +428,21 @@ const openApplyModal = (e) => {
     app.openModal(dom.modals.apply);
 };
 
-if(dom.triggers.apply) dom.triggers.apply.addEventListener('click', openApplyModal);
-if(dom.triggers.heroApply) dom.triggers.heroApply.addEventListener('click', openApplyModal);
+if (dom.triggers.apply) dom.triggers.apply.addEventListener('click', openApplyModal);
+if (dom.triggers.heroApply) dom.triggers.heroApply.addEventListener('click', openApplyModal);
 
 // Listener for the new Hero Button (List A Job)
-if(dom.triggers.heroList) {
-     dom.triggers.heroList.addEventListener('click', (e) => {
-         e.preventDefault();
-         app.openModal(dom.modals.list);
-     });
+if (dom.triggers.heroList) {
+    dom.triggers.heroList.addEventListener('click', (e) => {
+        e.preventDefault();
+        app.openModal(dom.modals.list);
+    });
 }
 
 // 2. Close Actions
 document.querySelectorAll('.modal-close, .modal-close-btn, .modal-close-all').forEach(btn => {
     btn.addEventListener('click', () => {
-        if(btn.classList.contains('modal-close-all')) app.closeAll();
+        if (btn.classList.contains('modal-close-all')) app.closeAll();
         else app.closeModal(btn.closest('.modal-overlay'));
     });
 });
@@ -372,7 +462,7 @@ const filterJobs = () => {
     const filtered = jobs.filter(job => {
         const title = job.title ? job.title.toLowerCase() : '';
         const company = job.company ? job.company.toLowerCase() : '';
-        
+
         const matchText = title.includes(term) || company.includes(term);
         const matchType = type === 'all' || job.type === type;
         return matchText && matchType;
@@ -380,20 +470,20 @@ const filterJobs = () => {
     renderJobs(filtered);
 };
 
-if(dom.filters.search) dom.filters.search.addEventListener('input', filterJobs);
-if(dom.filters.type) dom.filters.type.addEventListener('change', filterJobs);
+if (dom.filters.search) dom.filters.search.addEventListener('input', filterJobs);
+if (dom.filters.type) dom.filters.type.addEventListener('change', filterJobs);
 
 // --- Drag & Drop File Upload ---
 
 function setupFileDrop(areaId: string) {
     const area = document.getElementById(areaId);
     if (!area) return;
-    
+
     const input = area.querySelector('input[type="file"]') as HTMLInputElement;
     const nameDisplay = area.querySelector('.file-name');
 
     area.addEventListener('click', () => input && input.click());
-    
+
     if (input) {
         input.addEventListener('change', () => {
             if (input.files && input.files.length && nameDisplay) nameDisplay.textContent = input.files[0].name;
@@ -448,7 +538,7 @@ if (dom.forms.list) {
         if (status) status.style.display = 'none';
 
         const formData = prepareFormData(dom.forms.list);
-        
+
         // Create Local Object
         const newJob = {
             id: 'local_' + Date.now(),
@@ -467,7 +557,7 @@ if (dom.forms.list) {
                 method: 'POST',
                 body: formData
             });
-            
+
             // Save Locally
             const existingLocal = JSON.parse(localStorage.getItem('eligo_custom_jobs') || '[]');
             existingLocal.push(newJob);
@@ -510,7 +600,7 @@ if (dom.forms.apply) {
                 method: 'POST',
                 body: formData
             });
-            
+
             btn.innerHTML = originalText;
             btn.disabled = false;
             dom.forms.apply.reset();

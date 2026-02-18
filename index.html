@@ -2648,8 +2648,12 @@
                             </select>
                         </div>
                         <div class="job-group">
-                            <label>Deadline</label>
+                            <label>Deadline *</label>
                             <input type="date" name="deadline" required class="job-input">
+                        </div>
+                        <div class="job-group">
+                            <label>Salary Range</label>
+                            <input type="text" name="salary" placeholder="e.g. £80,000 - £110,000" class="job-input">
                         </div>
                     </div>
                 </div>
@@ -2681,7 +2685,7 @@
                     <i class="fas fa-info-circle"
                         style="color: var(--accent-gold); margin-right: 0.5rem; margin-top: 2px;"></i>
                     <div>
-                        A <strong>$150 non-refundable fee</strong> applies to submit your job listing. By proceeding,
+                        A <strong>$150 non-refundable fee</strong> applies for 10 vetted Resumes. By proceeding,
                         you agree to this charge.
                     </div>
                 </div>
@@ -2690,7 +2694,7 @@
                     <button type="button" class="btn btn-secondary modal-close-btn"
                         style="color: var(--text-dark); border-color: var(--border-gray);">Cancel</button>
                     <!-- UPDATED: Button Text -->
-                    <button type="submit" class="btn btn-primary">List Job ($150)</button>
+                    <button type="submit" class="btn btn-primary">List Job($150)</button>
                 </div>
                 <div class="status-msg"></div>
             </form>
@@ -2811,13 +2815,25 @@
 
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // --- SUPABASE SETUP (additive, does not affect existing code) ---
+        const SUPABASE_URL = "https://fjvtpaqopqrntbrxbqxg.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqdnRwYXFvcHFybnRicnhicXhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzMzU0ODIsImV4cCI6MjA4NjkxMTQ4Mn0.R5ghQQfwla8-UgBNDBeTMEuRXEmPwO4wdkMt6iT-6gI";
+        let supabaseClient = null;
+        try {
+            if (window.supabase && window.supabase.createClient) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                console.log("Supabase client initialized.");
+            }
+        } catch (e) { console.warn("Supabase init skipped:", e); }
+
         // --- 1. CONFIGURATION ---
 
         // -------------------------------------------------------------------------
         // PASTE YOUR PUBLISHED GOOGLE SHEET LINK (TSV format) BELOW
         // -------------------------------------------------------------------------
-        const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRl9nXfkHXdHiZ5OV-Kp8IMMNSp8-nYRUVkFf2Vu80FKaJzm97L7B-wD1USXaNvQnZHWKETjfLr7WeN/pub?output=tsv";
+        const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRl9nXfkHXdHiZ5OV-Kp8IMMNSp8-nYRUVkFf2Vu80FKaJzm97L7B-wD1USXaNvQnZHWKETjfLr7WeN/pub?gid=0&single=true&output=tsv";
 
         // -------------------------------------------------------------------------
         // EMAIL CONFIGURATION
@@ -3008,60 +3024,146 @@
         // --- DATA FETCHING & MANAGEMENT ---
 
         async function fetchJobs() {
-            let combinedJobs = [...DEFAULT_JOBS];
+            let allJobs = [];
+            console.log('%c--- fetchJobs started ---', 'color: #c9a860; font-weight: bold;');
 
-            // 1. Fetch from Google Sheet (if configured)
-            if (GOOGLE_SHEET_URL) {
-                try {
-                    const response = await fetch(GOOGLE_SHEET_URL);
-                    const data = await response.text();
-                    const sheetJobs = parseTSV(data);
-                    if (sheetJobs.length > 0) {
-                        combinedJobs = sheetJobs; // Prefer sheet over default if sheet exists
-                    }
-                } catch (error) {
-                    console.error("Error fetching Google Sheet:", error);
+            const container = dom.containers.listings;
+            if (container) {
+                // Protocol check for local file security
+                if (window.location.protocol === 'file:') {
+                    console.error('CORS Error: Fetching from Google Sheets is blocked on the file:// protocol.');
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; border: 1px dashed var(--accent-gold); border-radius: 12px; margin: 1rem 0;">
+                            <h4 style="color: var(--accent-gold); margin-bottom: 0.5rem;"><i class="fas fa-exclamation-triangle"></i> Browser Security Restriction</h4>
+                            <p style="color: var(--text-light); font-size: 0.9rem;">Google Sheet jobs cannot load when opening this file directly from your computer.</p>
+                            <p style="color: var(--text-light); font-size: 0.9rem; margin-top: 0.5rem;"><strong>Please push to GitHub / Live server</strong> or run a local server to see your roles.</p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = '<div style="text-align: center; padding: 3rem; color: var(--text-light);"><i class="fas fa-spinner fa-spin"></i> Synchronizing jobs...</div>';
                 }
             }
 
-            // 2. Fetch Locally Submitted Jobs (from LocalStorage)
-            // This ensures jobs added via the form persist for the current user
-            const localJobs = JSON.parse(localStorage.getItem('eligo_custom_jobs') || '[]');
-            combinedJobs = [...localJobs, ...combinedJobs];
+            // 1. Fetch from Google Sheet (Prioritize these)
+            if (GOOGLE_SHEET_URL && window.location.protocol !== 'file:') {
+                try {
+                    // Add cache buster
+                    const sheetUrl = GOOGLE_SHEET_URL + (GOOGLE_SHEET_URL.includes('?') ? '&' : '?') + 'cb=' + Date.now();
+                    console.log('Fetching Google Sheet:', sheetUrl);
 
-            jobs = combinedJobs;
+                    const response = await fetch(sheetUrl);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                    const data = await response.text();
+                    console.log('Raw Sheet data received. Bytes:', data.length);
+
+                    const sheetJobs = parseTSV(data);
+                    console.log(`%cSuccessfully loaded ${sheetJobs.length} jobs from Google Sheet`, 'color: #10b981; font-weight: bold;');
+
+                    if (sheetJobs.length > 0) {
+                        allJobs = [...allJobs, ...sheetJobs];
+                    }
+                } catch (error) {
+                    console.error("Critical error fetching Google Sheet:", error);
+                }
+            }
+
+            // 2. Fetch from Supabase
+            if (supabaseClient) {
+                try {
+                    const { data, error } = await supabaseClient.from('jobs').select('*').order('created_at', { ascending: false });
+                    if (error) throw error;
+
+                    if (data) {
+                        console.log('Supabase raw data count:', data.length);
+                        // Normalize all keys to lowercase to avoid case-sensitivity issues
+                        const normalizedData = data.map(job => {
+                            const normalized = {};
+                            Object.keys(job).forEach(k => {
+                                normalized[k.toLowerCase()] = job[k];
+                            });
+                            return normalized;
+                        });
+                        allJobs = [...allJobs, ...normalizedData];
+                        console.log('Jobs added from Supabase:', normalizedData.length);
+                    }
+                } catch (e) {
+                    console.warn('Supabase jobs fetch failed:', e);
+                }
+            }
+
+            // Fallback to defaults if no jobs found anywhere else
+            if (allJobs.length === 0) {
+                console.log('No jobs found in Sheet or Supabase, using defaults.');
+                allJobs = [...DEFAULT_JOBS];
+            }
+
+            // 3. Fetch Locally Submitted Jobs (from LocalStorage)
+            const localJobs = JSON.parse(localStorage.getItem('eligo_custom_jobs') || '[]');
+            console.log('Local storage jobs found:', localJobs.length);
+
+            // Combine all
+            jobs = [...localJobs, ...allJobs];
+            console.log('Total combined jobs:', jobs.length);
+
             renderJobs(jobs);
         }
 
         // Simple TSV Parser for Google Sheets
         function parseTSV(tsvText) {
+            if (!tsvText) return [];
+
+            // Handle UTF-8 BOM if present
+            if (tsvText.charCodeAt(0) === 0xFEFF) {
+                tsvText = tsvText.substring(1);
+            }
+
             const rows = tsvText.split(/\r?\n/);
-            const headers = rows[0].split('\t').map(h => h.toLowerCase().trim());
+            if (rows.length < 1) return [];
+
+            // Robust header extraction
+            const headers = rows[0].split('\t').map(h => h.trim().toLowerCase());
+            console.log('Detected Sheet Headers:', headers);
+
             const result = [];
 
             for (let i = 1; i < rows.length; i++) {
-                if (!rows[i].trim()) continue;
+                const row = rows[i].trim();
+                if (!row) continue;
+
                 const values = rows[i].split('\t');
                 const obj = {};
                 let hasContent = false;
 
                 headers.forEach((header, index) => {
-                    const val = values[index] ? values[index].trim() : '';
+                    let val = (values[index] || '').trim();
                     if (val) hasContent = true;
-                    // Handle list conversion for responsibilities if needed
-                    if (header === 'responsibilities' || header === 'qualifications') {
-                        obj[header] = val.split(',').map(item => item.trim());
+
+                    // Map Sheet Headers to App Keys
+                    let key = header;
+                    if (header === 'requirements' || header === 'responsibilities') key = 'responsibilities';
+                    if (header === 'salary range' || header === 'salary') key = 'salary';
+
+                    // Standardize keys
+                    if (header === 'job title' || header === 'title') key = 'title';
+                    if (header === 'job description' || header === 'description') key = 'description';
+
+                    // Handle list conversion for responsibilities
+                    if (key === 'responsibilities' || key === 'qualifications') {
+                        // Split by newlines, bullets, or commas
+                        obj[key] = val.split(/[,\n|•]/).map(item => item.trim()).filter(item => item.length > 0);
                     } else {
-                        obj[header] = val;
+                        obj[key] = val;
                     }
                 });
 
-                // Standardize ID if missing
+                // Standardize ID
                 if (!obj.id) obj.id = 'sheet_' + i;
-                // Standardize array fields if missing
-                if (!obj.responsibilities) obj.responsibilities = [];
+                if (!obj.title && obj.job_title) obj.title = obj.job_title;
 
-                if (hasContent) result.push(obj);
+                if (hasContent && (obj.title || obj.id)) {
+                    result.push(obj);
+                }
             }
             return result;
         }
@@ -3080,15 +3182,27 @@
             data.forEach(job => {
                 const div = document.createElement('div');
                 div.className = 'job-card';
+
+                // Defensive access for title (handle Title, title, job_title etc)
+                const displayTitle = job.title || job.Title || job.job_title || job.JobTitle || 'Untitled Role';
+                const displayType = job.type || job.Type || 'Full-time';
+                const displayCompany = job.company || job.Company || 'Confidential';
+                const displayLocation = job.location || job.Location || 'Remote';
+                const displayDeadline = job.deadline || job.Deadline || 'Open';
+
+                // Defensive access for salary
+                const displaySalary = job.salary || job.Salary || job.salary_range || job['salary range'] || 'Competitive';
+
                 div.innerHTML = `
                     <div class="job-card-header">
-                        <h3 style="font-size: 1.1rem; color: var(--primary-navy);">${job.title || 'Untitled Role'}</h3>
-                        <span class="job-tag">${job.type || 'Full-time'}</span>
+                        <h3 style="font-size: 1.1rem; color: var(--primary-navy);">${displayTitle}</h3>
+                        <span class="job-tag">${displayType}</span>
                     </div>
-                    <div style="font-weight: 500; color: var(--text-gray); font-size: 0.95rem;">${job.company || 'Confidential'}</div>
+                    <div style="font-weight: 500; color: var(--text-gray); font-size: 0.95rem;">${displayCompany}</div>
                     <div class="job-meta">
-                        <span><i class="fas fa-map-marker-alt"></i> ${job.location || 'Remote'}</span>
-                        <span><i class="far fa-clock"></i> ${job.deadline || 'Open'}</span>
+                        <span><i class="fas fa-map-marker-alt"></i> ${displayLocation}</span>
+                        <span><i class="far fa-clock"></i> ${displayDeadline}</span>
+                        <span style="color: var(--accent-gold); font-weight: 600;"><i class="fas fa-money-bill-wave"></i> ${displaySalary}</span>
                     </div>
                     `;
                 div.addEventListener('click', () => loadJobDetails(job));
@@ -3099,29 +3213,36 @@
         function loadJobDetails(job) {
             currentJob = job;
 
+            // Defensive access for details
+            const displayTitle = job.title || job.Title || job.job_title || job.JobTitle || 'Untitled Role';
+            const displayCompany = job.company || job.Company || 'Confidential';
+            const displayLocation = job.location || job.Location || 'Remote';
+            const displayDescription = job.description || job.Overview || job.Overview || job.Description || 'No description provided.';
+            const responsibilities = job.responsibilities || job.Responsibilities || job.requirements || job.Requirements || [];
+
             // Handle responsibilities being a string or array
             let responsibilitiesList = '';
-            if (Array.isArray(job.responsibilities)) {
-                responsibilitiesList = job.responsibilities.map(i => `<li>${i}</li>`).join('');
-            } else if (typeof job.responsibilities === 'string') {
+            if (Array.isArray(responsibilities)) {
+                responsibilitiesList = responsibilities.map(i => `<li>${i}</li>`).join('');
+            } else if (typeof responsibilities === 'string') {
                 // Split by newline or bullet points if it's a raw string
-                responsibilitiesList = job.responsibilities.split(/\n|•/).filter(i => i.trim().length > 0).map(i => `<li>${i}</li>`).join('');
+                responsibilitiesList = responsibilities.split(/\n|•/).filter(i => i.trim().length > 0).map(i => `<li>${i}</li>`).join('');
             }
 
             if (!dom.containers.details) return;
 
             dom.containers.details.innerHTML = `
                 <div style="border-bottom: 1px solid var(--border-gray); padding-bottom: 1rem; margin-bottom: 1.5rem;">
-                    <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">${job.title}</h2>
+                    <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">${displayTitle}</h2>
                     <div style="display:flex; gap: 1rem; color: var(--text-gray); font-size: 0.9rem;">
-                        <span>${job.company}</span>
+                        <span>${displayCompany}</span>
                         <span>&bull;</span>
-                        <span>${job.location}</span>
+                        <span>${displayLocation}</span>
                     </div>
                 </div>
                 
                 <h4 style="margin: 1rem 0 0.5rem;">Overview</h4>
-                <p style="color: var(--text-gray); font-size: 0.95rem;">${job.description || job.overview || 'No description provided.'}</p>
+                <p style="color: var(--text-gray); font-size: 0.95rem;">${displayDescription}</p>
                 
                 ${responsibilitiesList ? `<h4 style="margin: 1.5rem 0 0.5rem;">Key Responsibilities</h4>
                 <ul style="padding-left: 1.2rem; color: var(--text-gray); font-size: 0.95rem;">${responsibilitiesList}</ul>` : ''
@@ -3134,9 +3255,9 @@
 
             document.getElementById('btn-apply-now')?.addEventListener('click', () => {
                 const titleEl = document.getElementById('apply-role-title');
-                if (titleEl) titleEl.textContent = job.title;
+                if (titleEl) titleEl.textContent = displayTitle;
                 const idInput = document.getElementById('app-job-id');
-                if (idInput) idInput.value = job.id.toString();
+                if (idInput) idInput.value = displayTitle; // Ensure title is passed as ID for tracking
                 app.switchView('application');
             });
 
@@ -3283,8 +3404,8 @@
                     type: formData.get('type'),
                     deadline: formData.get('deadline'),
                     description: formData.get('overview'),
-                    responsibilities: formData.get('responsibilities') ? formData.get('responsibilities').split('\n') : [],
-                    salary: "Competitive" // Default if not in form
+                    responsibilities: formData.get('responsibilities') ? formData.get('responsibilities').split('\n').map(r => r.trim()).filter(r => r.length > 0) : [],
+                    salary: formData.get('salary') || "Competitive" // Dynamic salary from form
                 };
 
                 // 2. Submit to Web3Forms (Email Notification)
@@ -3293,6 +3414,19 @@
                         method: 'POST',
                         body: formData
                     });
+
+                    // 2b. Also save to Supabase (non-blocking, does not affect existing flow)
+                    if (supabaseClient) {
+                        try {
+                            await supabaseClient.from('jobs').insert([{
+                                title: newJob.title, company: newJob.company, location: newJob.location,
+                                type: newJob.type, deadline: newJob.deadline, description: newJob.description,
+                                responsibilities: newJob.responsibilities, salary: newJob.salary,
+                                email: formData.get('email')
+                            }]);
+                            console.log('Job also saved to Supabase.');
+                        } catch (e) { console.warn('Supabase job insert failed (non-critical):', e); }
+                    }
 
                     // 3. Save Locally (So it appears in the list automatically for this user)
                     const existingLocal = JSON.parse(localStorage.getItem('eligo_custom_jobs') || '[]');
@@ -3338,6 +3472,31 @@
                         method: 'POST',
                         body: formData
                     });
+
+                    // Also save to Supabase (non-blocking)
+                    if (supabaseClient) {
+                        try {
+                            let cvUrl = '';
+                            const fileInput = applyForm.querySelector('input[type="file"]');
+                            const file = fileInput && fileInput.files[0];
+                            if (file) {
+                                const filePath = Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9.]/g, '_');
+                                const { error: upErr } = await supabaseClient.storage.from('Resumes').upload(filePath, file);
+                                if (!upErr) {
+                                    const { data: urlData } = supabaseClient.storage.from('Resumes').getPublicUrl(filePath);
+                                    cvUrl = urlData.publicUrl;
+                                }
+                            }
+                            await supabaseClient.from('applications').insert([{
+                                job_id: formData.get('job_id') || '', // This is the job title as per form logic
+                                fullname: formData.get('fullname'),
+                                email: formData.get('email'),
+                                phone: formData.get('phone') || '',
+                                cv_url: cvUrl
+                            }]);
+                            console.log('Application also saved to Supabase.');
+                        } catch (e) { console.warn('Supabase application save failed (non-critical):', e); }
+                    }
 
                     btn.innerHTML = originalText;
                     btn.disabled = false;
@@ -3537,6 +3696,18 @@
                 });
 
                 const result = await response.json();
+
+                // Also save to Supabase (non-blocking)
+                if (supabaseClient) {
+                    try {
+                        await supabaseClient.from('messages').insert([{
+                            name: form.elements['name'] ? form.elements['name'].value : '',
+                            email: form.elements['email'] ? form.elements['email'].value : '',
+                            message: form.elements['message'] ? form.elements['message'].value : ''
+                        }]);
+                        console.log('Message also saved to Supabase.');
+                    } catch (e) { console.warn('Supabase message save failed (non-critical):', e); }
+                }
 
                 if (result.success) {
                     formStatus.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
