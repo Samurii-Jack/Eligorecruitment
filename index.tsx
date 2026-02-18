@@ -7,7 +7,18 @@
 // -------------------------------------------------------------------------
 // CONFIGURATION
 // -------------------------------------------------------------------------
+const SUPABASE_URL = "https://fjvtpaqopqrntbrxbqxg.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqdnRwYXFvcHFybnRicnhicXhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzMzU0ODIsImV4cCI6MjA4NjkxMTQ4Mn0.R5ghQQfwla8-UgBNDBeTMEuRXEmPwO4wdkMt6iT-6gI";
 const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRl9nXfkHXdHiZ5OV-Kp8IMMNSp8-nYRUVkFf2Vu80FKaJzm97L7B-wD1USXaNvQnZHWKETjfLr7WeN/pub?gid=0&single=true&output=tsv";
+
+let supabaseClient: any = null;
+try {
+    if ((window as any).supabase) {
+        supabaseClient = (window as any).supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    }
+} catch (e) {
+    console.warn("Supabase init skipped in TSX:", e);
+}
 const WEB3FORMS_ACCESS_KEY = "a5314a4a-a01b-4127-98eb-883ea3cdf096";
 
 // -------------------------------------------------------------------------

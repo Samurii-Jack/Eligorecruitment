@@ -6,12 +6,12 @@ const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRl9nX
 console.log('%cAdmin Portal Script Loading...', 'color: #c9a860; font-weight: bold;');
 
 // --- 2. INITIALIZATION ---
-let supabase;
+let sbAdmin;
 try {
     if (!window.supabase) {
         throw new Error("Supabase library not loaded. Check script tag in admin.html.");
     }
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    sbAdmin = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     console.log("Supabase initialized in portal.");
 } catch (e) {
     console.error("CRITICAL: Supabase failed to init:", e);
@@ -53,7 +53,7 @@ Object.entries(dom).forEach(([key, val]) => {
 async function checkAuth() {
     try {
         console.log('Checking session...');
-        const { data: { session }, error } = await supabase.auth.getSession();
+        const { data: { session }, error } = await sbAdmin.auth.getSession();
         if (error) throw error;
 
         if (session) {
@@ -98,7 +98,7 @@ if (dom.loginForm) {
 
         try {
             console.log('Attempting sign in for:', email);
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            const { data, error } = await sbAdmin.auth.signInWithPassword({ email, password });
 
             if (error) {
                 console.error('Login error:', error);
@@ -120,7 +120,7 @@ if (dom.loginForm) {
 }
 
 dom.logoutBtn.addEventListener('click', async () => {
-    await supabase.auth.signOut();
+    await sbAdmin.auth.signOut();
     showLogin();
 });
 
@@ -164,7 +164,7 @@ dom.navItems.forEach(item => {
 async function loadApplications() {
     dom.appTable.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading applications...</td></tr>';
 
-    const { data, error } = await supabase
+    const { data, error } = await sbAdmin
         .from('applications')
         .select('*')
         .order('created_at', { ascending: false });
@@ -203,7 +203,7 @@ async function loadMessages() {
 
     // We assume there's a 'messages' or 'contact_submissions' table
     // If not, we'll try to handle it gracefully
-    const { data, error } = await supabase
+    const { data, error } = await sbAdmin
         .from('messages')
         .select('*')
         .order('created_at', { ascending: false });
@@ -233,7 +233,7 @@ async function loadJobs() {
     dom.jobsTable.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading all jobs...</td></tr>';
 
     // 1. Fetch Supabase Jobs
-    const { data: dbJobs, error: dbError } = await supabase
+    const { data: dbJobs, error: dbError } = await sbAdmin
         .from('jobs')
         .select('*')
         .order('created_at', { ascending: false });
@@ -294,7 +294,7 @@ dom.postJobForm.addEventListener('submit', async (e) => {
         created_at: new Date().toISOString()
     };
 
-    const { error } = await supabase.from('jobs').insert([newJob]);
+    const { error } = await sbAdmin.from('jobs').insert([newJob]);
 
     if (error) {
         alert("Error publishing job: " + error.message);
@@ -310,13 +310,13 @@ dom.postJobForm.addEventListener('submit', async (e) => {
 // ACTIONS
 window.deleteJob = async (id) => {
     if (!confirm("Are you sure you want to delete this job permanently?")) return;
-    const { error } = await supabase.from('jobs').delete().eq('id', id);
+    const { error } = await sbAdmin.from('jobs').delete().eq('id', id);
     if (error) alert(error.message);
     else loadJobs();
 };
 
 window.closeJob = async (id) => {
-    const { error } = await supabase.from('jobs').update({ status: 'closed' }).eq('id', id);
+    const { error } = await sbAdmin.from('jobs').update({ status: 'closed' }).eq('id', id);
     if (error) alert(error.message);
     else loadJobs();
 };
