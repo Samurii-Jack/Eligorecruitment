@@ -3,6 +3,8 @@ const SUPABASE_URL = "https://fjvtpaqopqrntbrxbqxg.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqdnRwYXFvcHFybnRicnhicXhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzMzU0ODIsImV4cCI6MjA4NjkxMTQ4Mn0.R5ghQQfwla8-UgBNDBeTMEuRXEmPwO4wdkMt6iT-6gI";
 const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRl9nXfkHXdHiZ5OV-Kp8IMMNSp8-nYRUVkFf2Vu80FKaJzm97L7B-wD1USXaNvQnZHWKETjfLr7WeN/pub?gid=0&single=true&output=tsv";
 
+console.log('%cAdmin Portal Script Loading...', 'color: #c9a860; font-weight: bold;');
+
 // --- 2. INITIALIZATION ---
 let supabase;
 try {
@@ -16,17 +18,12 @@ try {
     alert("System Error: Supabase client failed to initialize. Please check console.");
 }
 
-// Add a global error listener to catch reloads caused by uncaught errors
-window.onerror = function (msg, url, lineNo, columnNo, error) {
-    console.error('Window Error:', msg, url, lineNo, columnNo, error);
-    return false;
-};
-
 // Global state
 let currentSection = 'applications';
 let cachedJobs = [];
 
 // DOM Elements
+console.log('Fetching DOM elements...');
 const dom = {
     loginScreen: document.getElementById('login-screen'),
     dashboard: document.getElementById('dashboard'),
@@ -44,18 +41,36 @@ const dom = {
     postJobForm: document.getElementById('new-job-form')
 };
 
+// Check for missing elements
+Object.entries(dom).forEach(([key, val]) => {
+    if (!val && key !== 'navItems' && key !== 'sections') {
+        console.warn(`Warning: DOM element "${key}" not found!`);
+    }
+});
+
 // --- 3. AUTH LOGIC ---
 
 async function checkAuth() {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-        showDashboard(session.user);
-    } else {
+    try {
+        console.log('Checking session...');
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+
+        if (session) {
+            console.log('Existing session found for:', session.user.email);
+            showDashboard(session.user);
+        } else {
+            console.log('No existing session.');
+            showLogin();
+        }
+    } catch (err) {
+        console.error('Session check failed:', err);
         showLogin();
     }
 }
 
 function showDashboard(user) {
+    console.log('Entering dashboard view...');
     dom.loginScreen.style.display = 'none';
     dom.dashboard.style.display = 'grid';
     dom.adminEmail.textContent = user.email;
@@ -67,32 +82,42 @@ function showLogin() {
     dom.dashboard.style.display = 'none';
 }
 
-dom.loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    console.log('Login form submitted');
-    dom.loginError.style.display = 'none';
+if (dom.loginForm) {
+    dom.loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        console.log('Login form submitted');
 
-    const email = dom.loginEmail.value;
-    const password = dom.loginPass.value;
+        dom.loginError.style.display = 'none';
+        const btn = dom.loginForm.querySelector('button');
+        const originalText = btn.textContent;
+        btn.textContent = 'Authenticating...';
+        btn.disabled = true;
 
-    try {
-        console.log('Attempting sign in for:', email);
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        const email = dom.loginEmail.value;
+        const password = dom.loginPass.value;
 
-        if (error) {
-            console.error('Login error:', error);
-            dom.loginError.textContent = error.message;
+        try {
+            console.log('Attempting sign in for:', email);
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                console.error('Login error:', error);
+                dom.loginError.textContent = error.message;
+                dom.loginError.style.display = 'block';
+            } else {
+                console.log('Login successful:', data.user.email);
+                showDashboard(data.user);
+            }
+        } catch (err) {
+            console.error('Unexpected auth error:', err);
+            dom.loginError.textContent = "Technical error: " + err.message;
             dom.loginError.style.display = 'block';
-        } else {
-            console.log('Login successful:', data.user.email);
-            showDashboard(data.user);
+        } finally {
+            btn.textContent = originalText;
+            btn.disabled = false;
         }
-    } catch (err) {
-        console.error('Unexpected auth error:', err);
-        dom.loginError.textContent = "An unexpected error occurred. Check console.";
-        dom.loginError.style.display = 'block';
-    }
-});
+    });
+}
 
 dom.logoutBtn.addEventListener('click', async () => {
     await supabase.auth.signOut();
