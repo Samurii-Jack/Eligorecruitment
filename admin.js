@@ -6,11 +6,21 @@ const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRl9nX
 // --- 2. INITIALIZATION ---
 let supabase;
 try {
+    if (!window.supabase) {
+        throw new Error("Supabase library not loaded. Check script tag in admin.html.");
+    }
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     console.log("Supabase initialized in portal.");
 } catch (e) {
-    console.error("Supabase failed to init:", e);
+    console.error("CRITICAL: Supabase failed to init:", e);
+    alert("System Error: Supabase client failed to initialize. Please check console.");
 }
+
+// Add a global error listener to catch reloads caused by uncaught errors
+window.onerror = function (msg, url, lineNo, columnNo, error) {
+    console.error('Window Error:', msg, url, lineNo, columnNo, error);
+    return false;
+};
 
 // Global state
 let currentSection = 'applications';
@@ -59,18 +69,28 @@ function showLogin() {
 
 dom.loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    console.log('Login form submitted');
     dom.loginError.style.display = 'none';
 
     const email = dom.loginEmail.value;
     const password = dom.loginPass.value;
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    try {
+        console.log('Attempting sign in for:', email);
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (error) {
-        dom.loginError.textContent = error.message;
+        if (error) {
+            console.error('Login error:', error);
+            dom.loginError.textContent = error.message;
+            dom.loginError.style.display = 'block';
+        } else {
+            console.log('Login successful:', data.user.email);
+            showDashboard(data.user);
+        }
+    } catch (err) {
+        console.error('Unexpected auth error:', err);
+        dom.loginError.textContent = "An unexpected error occurred. Check console.";
         dom.loginError.style.display = 'block';
-    } else {
-        showDashboard(data.user);
     }
 });
 
