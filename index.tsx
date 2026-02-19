@@ -607,10 +607,34 @@ if (dom.forms.apply) {
         const formData = prepareFormData(dom.forms.apply);
 
         try {
+            // 1. Send via Web3Forms
             await fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
                 body: formData
             });
+
+            // 2. Also save to Supabase (non-blocking)
+            if (supabaseClient) {
+                try {
+                    console.log('Attempting to save application to Supabase...');
+                    const jobTitle = formData.get('job_id') || formData.get('position') || 'General';
+
+                    const { error } = await supabaseClient.from('applications').insert([{
+                        full_name: formData.get('name'),
+                        email: formData.get('email'),
+                        job_id: jobTitle,
+                        position: jobTitle,
+                        message: formData.get('message'),
+                        resume_url: null, // Basic version for now
+                        created_at: new Date().toISOString()
+                    }]);
+
+                    if (error) throw error;
+                    console.log('Application also saved to Supabase successfully.');
+                } catch (sbError) {
+                    console.warn('Supabase application save failed:', sbError);
+                }
+            }
 
             btn.innerHTML = originalText;
             btn.disabled = false;
@@ -619,6 +643,7 @@ if (dom.forms.apply) {
             app.showSuccess('Application Sent', 'Good luck! The employer has received your application.');
 
         } catch (error) {
+            console.error('Submission error:', error);
             btn.innerHTML = originalText;
             btn.disabled = false;
             app.showSuccess('Application Sent', 'Application simulated (Email service unavailable).');
