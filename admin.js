@@ -244,35 +244,41 @@
         }
     }
 
-    // JOB MANAGER
     async function loadJobs() {
+        console.log('--- loadJobs triggered ---');
         dom.jobsTable.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading all jobs...</td></tr>';
 
-        // 1. Fetch Supabase Jobs
-        const { data: dbJobs, error: dbError } = await sbAdmin
-            .from('jobs')
-            .select('*')
-            .order('created_at', { ascending: false });
-
-        // 2. Fetch Sheet Jobs
-        let sheetJobs = [];
         try {
-            const res = await fetch(GOOGLE_SHEET_URL + '&cb=' + Date.now());
-            const tsv = await res.text();
-            sheetJobs = parseTSV(tsv).map(j => ({ ...j, source: 'Sheet' }));
-        } catch (e) { console.warn("Admin portal sheet fetch failed:", e); }
+            // 1. Fetch Supabase Jobs
+            console.log('Fetching Supabase jobs...');
+            const { data: dbJobs, error: dbError } = await sbAdmin.from('jobs').select('*').order('created_at', { ascending: false });
+            if (dbError) console.error('Supabase jobs error:', dbError);
+            console.log('SUPABASE JOBS RECEIVED:', dbJobs);
 
-        const combined = [
-            ...(dbJobs || []).map(j => ({ ...j, source: 'Supabase' })),
-            ...sheetJobs
-        ];
+            // 2. Fetch Sheet Jobs
+            console.log('Fetching Google Sheet jobs...');
+            let sheetJobs = [];
+            try {
+                const res = await fetch(GOOGLE_SHEET_URL + '&cb=' + Date.now());
+                const tsv = await res.text();
+                sheetJobs = parseTSV(tsv).map(j => ({ ...j, source: 'Sheet' }));
+                console.log('SHEET JOBS RECEIVED:', sheetJobs.length);
+            } catch (e) {
+                console.warn("Admin portal sheet fetch failed:", e);
+            }
 
-        if (combined.length === 0) {
-            dom.jobsTable.innerHTML = '<tr><td colspan="5" style="text-align:center;">No jobs found.</td></tr>';
-            return;
-        }
+            const combined = [
+                ...(dbJobs || []).map(j => ({ ...j, source: 'Supabase' })),
+                ...sheetJobs
+            ];
+            console.log('COMBINED JOBS:', combined.length);
 
-        dom.jobsTable.innerHTML = combined.map((job, idx) => `
+            if (combined.length === 0) {
+                dom.jobsTable.innerHTML = '<tr><td colspan="5" style="text-align:center;">No jobs found.</td></tr>';
+                return;
+            }
+
+            dom.jobsTable.innerHTML = combined.map((job, idx) => `
         <tr>
             <td>
                 <div style="font-weight:600;">${job.title || job.job_title}</div>
@@ -291,76 +297,76 @@
             </td>
         </tr>
     `).join('');
-    }
+        }
 
     // POST JOB
     dom.postJobForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = e.target.querySelector('button');
-        btn.textContent = 'Publishing...';
-        btn.disabled = true;
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.textContent = 'Publishing...';
+            btn.disabled = true;
 
-        const newJob = {
-            title: document.getElementById('job-title').value,
-            company: document.getElementById('job-company').value,
-            location: document.getElementById('job-location').value,
-            type: document.getElementById('job-type').value,
-            salary: document.getElementById('job-salary').value,
-            responsibilities: document.getElementById('job-resp').value.split('\n').filter(r => r.trim()),
-            created_at: new Date().toISOString()
+            const newJob = {
+                title: document.getElementById('job-title').value,
+                company: document.getElementById('job-company').value,
+                location: document.getElementById('job-location').value,
+                type: document.getElementById('job-type').value,
+                salary: document.getElementById('job-salary').value,
+                responsibilities: document.getElementById('job-resp').value.split('\n').filter(r => r.trim()),
+                created_at: new Date().toISOString()
+            };
+
+            const { error } = await sbAdmin.from('jobs').insert([newJob]);
+
+            if (error) {
+                alert("Error publishing job: " + error.message);
+            } else {
+                alert("Job published successfully!");
+                dom.postJobForm.reset();
+                switchSection('jobs');
+            }
+            btn.textContent = 'Publish Job';
+            btn.disabled = false;
+        });
+
+        // ACTIONS
+        window.deleteJob = async (id) => {
+            if (!confirm("Are you sure you want to delete this job permanently?")) return;
+            const { error } = await sbAdmin.from('jobs').delete().eq('id', id);
+            if (error) alert(error.message);
+            else loadJobs();
         };
 
-        const { error } = await sbAdmin.from('jobs').insert([newJob]);
+        window.closeJob = async (id) => {
+            const { error } = await sbAdmin.from('jobs').update({ status: 'closed' }).eq('id', id);
+            if (error) alert(error.message);
+            else loadJobs();
+        };
 
-        if (error) {
-            alert("Error publishing job: " + error.message);
-        } else {
-            alert("Job published successfully!");
-            dom.postJobForm.reset();
-            switchSection('jobs');
+        // TSV Parser helper
+        function parseTSV(tsvText) {
+            if (!tsvText) return [];
+            if (tsvText.charCodeAt(0) === 0xFEFF) tsvText = tsvText.substring(1);
+            const rows = tsvText.split(/\r?\n/);
+            if (rows.length < 1) return [];
+            const headers = rows[0].split('\t').map(h => h.trim().toLowerCase());
+            const result = [];
+            for (let i = 1; i < rows.length; i++) {
+                const values = rows[i].split('\t');
+                if (!rows[i].trim()) continue;
+                const obj = {};
+                headers.forEach((h, idx) => {
+                    let val = (values[idx] || '').trim();
+                    let key = h === 'requirements' ? 'responsibilities' : (h === 'salary range' ? 'salary' : h);
+                    if (key === 'responsibilities') obj[key] = val.split(/[,\n|•]/).map(item => item.trim()).filter(item => item.length > 0);
+                    else obj[key] = val;
+                });
+                if (!obj.id) obj.id = 'sheet_' + i;
+                result.push(obj);
+            }
+            return result;
         }
-        btn.textContent = 'Publish Job';
-        btn.disabled = false;
-    });
 
-    // ACTIONS
-    window.deleteJob = async (id) => {
-        if (!confirm("Are you sure you want to delete this job permanently?")) return;
-        const { error } = await sbAdmin.from('jobs').delete().eq('id', id);
-        if (error) alert(error.message);
-        else loadJobs();
-    };
-
-    window.closeJob = async (id) => {
-        const { error } = await sbAdmin.from('jobs').update({ status: 'closed' }).eq('id', id);
-        if (error) alert(error.message);
-        else loadJobs();
-    };
-
-    // TSV Parser helper
-    function parseTSV(tsvText) {
-        if (!tsvText) return [];
-        if (tsvText.charCodeAt(0) === 0xFEFF) tsvText = tsvText.substring(1);
-        const rows = tsvText.split(/\r?\n/);
-        if (rows.length < 1) return [];
-        const headers = rows[0].split('\t').map(h => h.trim().toLowerCase());
-        const result = [];
-        for (let i = 1; i < rows.length; i++) {
-            const values = rows[i].split('\t');
-            if (!rows[i].trim()) continue;
-            const obj = {};
-            headers.forEach((h, idx) => {
-                let val = (values[idx] || '').trim();
-                let key = h === 'requirements' ? 'responsibilities' : (h === 'salary range' ? 'salary' : h);
-                if (key === 'responsibilities') obj[key] = val.split(/[,\n|•]/).map(item => item.trim()).filter(item => item.length > 0);
-                else obj[key] = val;
-            });
-            if (!obj.id) obj.id = 'sheet_' + i;
-            result.push(obj);
-        }
-        return result;
-    }
-
-    // Start
-    checkAuth();
-})();
+        // Start
+        checkAuth();
+    }) ();
