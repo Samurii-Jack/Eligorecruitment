@@ -616,27 +616,53 @@ if (dom.forms.apply) {
             // 2. Also save to Supabase (non-blocking)
             if (supabaseClient) {
                 try {
-                    console.log('Attempting to save application to Supabase...');
+                    console.log('Attempting CV upload and application save to Supabase...');
                     const jobTitle = formData.get('job_id') || formData.get('position') || 'General';
                     const applicantName = formData.get('fullname') || formData.get('name') || 'Unknown';
                     const cvFile = formData.get('cv') as File;
-                    const cvLabel = cvFile && cvFile.name ? cvFile.name : null;
 
+                    let cvPublicUrl = null;
+
+                    // A. Upload File to Supabase Storage if present
+                    if (cvFile && cvFile.size > 0) {
+                        console.log('Uploading CV to Storage...');
+                        const fileExt = cvFile.name.split('.').pop();
+                        const fileName = `${Date.now()}_${applicantName.replace(/\s+/g, '_')}.${fileExt}`;
+                        const filePath = `${fileName}`;
+
+                        const { data: uploadData, error: uploadError } = await supabaseClient
+                            .storage
+                            .from('Resumes')
+                            .upload(filePath, cvFile);
+
+                        if (uploadError) {
+                            console.error('Storage upload failed:', uploadError);
+                        } else {
+                            const { data: { publicUrl } } = supabaseClient
+                                .storage
+                                .from('Resumes')
+                                .getPublicUrl(filePath);
+                            cvPublicUrl = publicUrl;
+                            console.log('CV Upload successful. URL:', cvPublicUrl);
+                        }
+                    }
+
+                    // B. Save Record to Database
                     const { error } = await supabaseClient.from('applications').insert([{
                         fullname: applicantName,
-                        full_name: applicantName, // Support both common column names
+                        full_name: applicantName,
                         email: formData.get('email'),
                         job_id: String(jobTitle),
                         position: String(jobTitle),
                         message: formData.get('message'),
-                        resume_url: cvLabel, // Use filename as placeholder for now
+                        resume_url: cvPublicUrl || (cvFile ? cvFile.name : null),
                         created_at: new Date().toISOString()
                     }]);
 
                     if (error) throw error;
-                    console.log('Application also saved to Supabase successfully.');
+                    console.log('Application saved to Supabase successfully.');
                 } catch (sbError) {
-                    console.warn('Supabase application save failed:', sbError);
+                    console.warn('Supabase application flow failed:', sbError);
                 }
             }
 
