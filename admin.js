@@ -163,70 +163,85 @@
 
     // APPLICATIONS
     async function loadApplications() {
+        console.log('--- loadApplications triggered ---');
         dom.appTable.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading applications...</td></tr>';
 
-        const { data, error } = await sbAdmin
-            .from('applications')
-            .select('*')
-            .order('created_at', { ascending: false });
+        try {
+            const { data, error } = await sbAdmin.from('applications').select('*').order('created_at', { ascending: false });
 
-        if (error) {
-            dom.appTable.innerHTML = `<tr><td colspan="5" style="color:red; text-align:center;">Error: ${error.message}</td></tr>`;
-            return;
+            if (error) {
+                console.error('FETCH ERROR (apps):', error);
+                dom.appTable.innerHTML = `<tr><td colspan="5" style="color:red; text-align:center;">Error: ${error.message}</td></tr>`;
+                return;
+            }
+
+            console.log('APP DATA RECEIVED:', data);
+
+            if (!data || data.length === 0) {
+                console.warn('No applications visible.');
+                dom.appTable.innerHTML = '<tr><td colspan="5" style="text-align:center;">No applications found.</td></tr>';
+                return;
+            }
+
+            dom.appTable.innerHTML = data.map(app => `
+                <tr>
+                    <td><div style="font-weight:600;">${app.full_name || 'Unknown'}</div><div style="font-size:0.8rem; color:var(--text-light);">${app.email}</div></td>
+                    <td>${app.job_id || app.position || 'N/A'}</td>
+                    <td>${new Date(app.created_at).toLocaleDateString()}</td>
+                    <td><span class="badge" style="background:rgba(201,168,96,0.1); color:var(--accent-gold);">Received</span></td>
+                    <td>${app.resume_url ? `<a href="${app.resume_url}" target="_blank" class="action-btn"><i class="fas fa-download"></i> View CV</a>` : '<span style="color:var(--text-light);">No CV</span>'}</td>
+                </tr>
+            `).join('');
+        } catch (e) {
+            console.error('UI ERROR (apps):', e);
         }
-
-        if (!data || data.length === 0) {
-            dom.appTable.innerHTML = '<tr><td colspan="5" style="text-align:center;">No applications found.</td></tr>';
-            return;
-        }
-
-        dom.appTable.innerHTML = data.map(app => `
-        <tr>
-            <td>
-                <div style="font-weight:600;">${app.full_name || 'Unknown'}</div>
-                <div style="font-size:0.8rem; color:var(--text-light);">${app.email}</div>
-            </td>
-            <td>${app.job_id || app.position || 'N/A'}</td>
-            <td>${new Date(app.created_at).toLocaleDateString()}</td>
-            <td><span class="badge" style="background:rgba(201,168,96,0.1); color:var(--accent-gold);">Received</span></td>
-            <td>
-                ${app.resume_url ?
-                `<a href="${app.resume_url}" target="_blank" class="action-btn"><i class="fas fa-download"></i> View CV</a>` :
-                '<span style="color:var(--text-light);">No CV</span>'}
-            </td>
-        </tr>
-    `).join('');
     }
 
     // MESSAGES
     async function loadMessages() {
+        console.log('--- loadMessages triggered ---');
         dom.msgTable.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading messages...</td></tr>';
 
-        // We assume there's a 'messages' or 'contact_submissions' table
-        // If not, we'll try to handle it gracefully
-        const { data, error } = await sbAdmin
-            .from('messages')
-            .select('*')
-            .order('created_at', { ascending: false });
+        try {
+            console.log('Fetching "messages" from Supabase...');
+            const { data, error } = await sbAdmin
+                .from('messages')
+                .select('*')
+                .order('created_at', { ascending: false });
 
-        if (error) {
-            dom.msgTable.innerHTML = '<tr><td colspan="4" style="text-align:center;">No messages table found or error.</td></tr>';
-            return;
+            if (error) {
+                console.error('FETCH ERROR (messages):', error);
+                dom.msgTable.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Permission or Database error: ${error.message}</td></tr>`;
+                return;
+            }
+
+            console.log('MESSAGE DATA RECEIVED:', data);
+
+            if (!data || data.length === 0) {
+                console.warn('No messages returned. Check RLS policies if data exists in table.');
+                dom.msgTable.innerHTML = '<tr><td colspan="4" style="text-align:center; opacity:0.7;">No messages visible. (Check RLS permissions)</td></tr>';
+                return;
+            }
+
+            dom.msgTable.innerHTML = data.map(msg => `
+                <tr>
+                    <td>
+                        <div style="font-weight:600;">${msg.name || 'Anonymous'}</div>
+                        <div style="font-size:0.8rem; color:var(--text-light);">${msg.email || 'No email'}</div>
+                    </td>
+                    <td>${msg.subject || 'No Subject'}</td>
+                    <td>${msg.created_at ? new Date(msg.created_at).toLocaleDateString() : 'N/A'}</td>
+                    <td>
+                        <button class="action-btn" onclick="alert('Message:\\n\\n${(msg.message || '').replace(/'/g, "\\'")}')">Read</button>
+                    </td>
+                </tr>
+            `).join('');
+            console.log('Table populated with', data.length, 'messages.');
+
+        } catch (e) {
+            console.error('CRITICAL UI ERROR:', e);
+            dom.msgTable.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">System Error: ${e.message}</td></tr>`;
         }
-
-        dom.msgTable.innerHTML = data.map(msg => `
-        <tr>
-            <td>
-                <div style="font-weight:600;">${msg.name}</div>
-                <div style="font-size:0.8rem; color:var(--text-light);">${msg.email}</div>
-            </td>
-            <td>${msg.subject || 'No Subject'}</td>
-            <td>${new Date(msg.created_at).toLocaleDateString()}</td>
-            <td>
-                <button class="action-btn" onclick="alert('Message:\\n\\n${msg.message}')">Read</button>
-            </td>
-        </tr>
-    `).join('');
     }
 
     // JOB MANAGER
