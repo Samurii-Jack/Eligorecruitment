@@ -183,15 +183,31 @@
                 return;
             }
 
-            dom.appTable.innerHTML = data.map(app => `
-                <tr>
-                    <td><div style="font-weight:600;">${app.full_name || 'Unknown'}</div><div style="font-size:0.8rem; color:var(--text-light);">${app.email}</div></td>
-                    <td>${app.job_id || app.position || 'N/A'}</td>
-                    <td>${new Date(app.created_at).toLocaleDateString()}</td>
-                    <td><span class="badge" style="background:rgba(201,168,96,0.1); color:var(--accent-gold);">Received</span></td>
-                    <td>${app.resume_url ? `<a href="${app.resume_url}" target="_blank" class="action-btn"><i class="fas fa-download"></i> View CV</a>` : '<span style="color:var(--text-light);">No CV</span>'}</td>
-                </tr>
-            `).join('');
+            dom.appTable.innerHTML = data.map(app => {
+                const name = app.fullname || app.full_name || app.applicant_name || 'Unknown';
+                const job = app.job_id || app.position || 'N/A';
+                const cv = app.resume_url || app.cv_url || app.cv_path;
+
+                return `
+                    <tr>
+                        <td>
+                            <div style="font-weight:600;">${name}</div>
+                            <div style="font-size:0.8rem; color:var(--text-light);">${app.email}</div>
+                        </td>
+                        <td>${job === 'undefined' ? 'N/A' : job}</td>
+                        <td>${new Date(app.created_at).toLocaleDateString()}</td>
+                        <td><span class="badge" style="background:rgba(201,168,96,0.1); color:var(--accent-gold);">Received</span></td>
+                        <td>
+                            ${cv ?
+                        (cv.startsWith('http') ?
+                            `<a href="${cv}" target="_blank" class="action-btn"><i class="fas fa-download"></i> View CV</a>` :
+                            `<span title="${cv}" style="color:var(--accent-gold); font-size:0.8rem;"><i class="fas fa-file"></i> ${cv}</span>`
+                        ) :
+                        '<span style="color:var(--text-light);">No CV</span>'}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         } catch (e) {
             console.error('UI ERROR (apps):', e);
         }

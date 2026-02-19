@@ -618,14 +618,18 @@ if (dom.forms.apply) {
                 try {
                     console.log('Attempting to save application to Supabase...');
                     const jobTitle = formData.get('job_id') || formData.get('position') || 'General';
+                    const applicantName = formData.get('fullname') || formData.get('name') || 'Unknown';
+                    const cvFile = formData.get('cv') as File;
+                    const cvLabel = cvFile && cvFile.name ? cvFile.name : null;
 
                     const { error } = await supabaseClient.from('applications').insert([{
-                        full_name: formData.get('name'),
+                        fullname: applicantName,
+                        full_name: applicantName, // Support both common column names
                         email: formData.get('email'),
-                        job_id: jobTitle,
-                        position: jobTitle,
+                        job_id: String(jobTitle),
+                        position: String(jobTitle),
                         message: formData.get('message'),
-                        resume_url: null, // Basic version for now
+                        resume_url: cvLabel, // Use filename as placeholder for now
                         created_at: new Date().toISOString()
                     }]);
 
