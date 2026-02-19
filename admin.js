@@ -313,76 +313,80 @@
             </td>
         </tr>
     `).join('');
+        } catch (e) {
+            console.error('UI ERROR (jobs):', e);
+            dom.jobsTable.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">System Error: ${e.message}</td></tr>`;
         }
+    }
 
     // POST JOB
     dom.postJobForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button');
-            btn.textContent = 'Publishing...';
-            btn.disabled = true;
+        e.preventDefault();
+        const btn = e.target.querySelector('button');
+        btn.textContent = 'Publishing...';
+        btn.disabled = true;
 
-            const newJob = {
-                title: document.getElementById('job-title').value,
-                company: document.getElementById('job-company').value,
-                location: document.getElementById('job-location').value,
-                type: document.getElementById('job-type').value,
-                salary: document.getElementById('job-salary').value,
-                responsibilities: document.getElementById('job-resp').value.split('\n').filter(r => r.trim()),
-                created_at: new Date().toISOString()
-            };
-
-            const { error } = await sbAdmin.from('jobs').insert([newJob]);
-
-            if (error) {
-                alert("Error publishing job: " + error.message);
-            } else {
-                alert("Job published successfully!");
-                dom.postJobForm.reset();
-                switchSection('jobs');
-            }
-            btn.textContent = 'Publish Job';
-            btn.disabled = false;
-        });
-
-        // ACTIONS
-        window.deleteJob = async (id) => {
-            if (!confirm("Are you sure you want to delete this job permanently?")) return;
-            const { error } = await sbAdmin.from('jobs').delete().eq('id', id);
-            if (error) alert(error.message);
-            else loadJobs();
+        const newJob = {
+            title: document.getElementById('job-title').value,
+            company: document.getElementById('job-company').value,
+            location: document.getElementById('job-location').value,
+            type: document.getElementById('job-type').value,
+            salary: document.getElementById('job-salary').value,
+            responsibilities: document.getElementById('job-resp').value.split('\n').filter(r => r.trim()),
+            created_at: new Date().toISOString()
         };
 
-        window.closeJob = async (id) => {
-            const { error } = await sbAdmin.from('jobs').update({ status: 'closed' }).eq('id', id);
-            if (error) alert(error.message);
-            else loadJobs();
-        };
+        const { error } = await sbAdmin.from('jobs').insert([newJob]);
 
-        // TSV Parser helper
-        function parseTSV(tsvText) {
-            if (!tsvText) return [];
-            if (tsvText.charCodeAt(0) === 0xFEFF) tsvText = tsvText.substring(1);
-            const rows = tsvText.split(/\r?\n/);
-            if (rows.length < 1) return [];
-            const headers = rows[0].split('\t').map(h => h.trim().toLowerCase());
-            const result = [];
-            for (let i = 1; i < rows.length; i++) {
-                const values = rows[i].split('\t');
-                if (!rows[i].trim()) continue;
-                const obj = {};
-                headers.forEach((h, idx) => {
-                    let val = (values[idx] || '').trim();
-                    let key = h === 'requirements' ? 'responsibilities' : (h === 'salary range' ? 'salary' : h);
-                    if (key === 'responsibilities') obj[key] = val.split(/[,\n|•]/).map(item => item.trim()).filter(item => item.length > 0);
-                    else obj[key] = val;
-                });
-                if (!obj.id) obj.id = 'sheet_' + i;
-                result.push(obj);
-            }
-            return result;
+        if (error) {
+            alert("Error publishing job: " + error.message);
+        } else {
+            alert("Job published successfully!");
+            dom.postJobForm.reset();
+            switchSection('jobs');
         }
+        btn.textContent = 'Publish Job';
+        btn.disabled = false;
+    });
 
-        // Start
-        checkAuth();
-    }) ();
+    // ACTIONS
+    window.deleteJob = async (id) => {
+        if (!confirm("Are you sure you want to delete this job permanently?")) return;
+        const { error } = await sbAdmin.from('jobs').delete().eq('id', id);
+        if (error) alert(error.message);
+        else loadJobs();
+    };
+
+    window.closeJob = async (id) => {
+        const { error } = await sbAdmin.from('jobs').update({ status: 'closed' }).eq('id', id);
+        if (error) alert(error.message);
+        else loadJobs();
+    };
+
+    // TSV Parser helper
+    function parseTSV(tsvText) {
+        if (!tsvText) return [];
+        if (tsvText.charCodeAt(0) === 0xFEFF) tsvText = tsvText.substring(1);
+        const rows = tsvText.split(/\r?\n/);
+        if (rows.length < 1) return [];
+        const headers = rows[0].split('\t').map(h => h.trim().toLowerCase());
+        const result = [];
+        for (let i = 1; i < rows.length; i++) {
+            const values = rows[i].split('\t');
+            if (!rows[i].trim()) continue;
+            const obj = {};
+            headers.forEach((h, idx) => {
+                let val = (values[idx] || '').trim();
+                let key = h === 'requirements' ? 'responsibilities' : (h === 'salary range' ? 'salary' : h);
+                if (key === 'responsibilities') obj[key] = val.split(/[,\n|•]/).map(item => item.trim()).filter(item => item.length > 0);
+                else obj[key] = val;
+            });
+            if (!obj.id) obj.id = 'sheet_' + i;
+            result.push(obj);
+        }
+        return result;
+    }
+
+    // Start
+    checkAuth();
+})();
