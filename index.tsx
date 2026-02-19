@@ -618,7 +618,7 @@ if (dom.forms.apply) {
                 try {
                     console.log('Attempting CV upload and application save to Supabase...');
                     const jobTitle = formData.get('job_id') || formData.get('position') || 'General';
-                    const applicantName = formData.get('fullname') || formData.get('name') || 'Unknown';
+                    const applicantName = String(formData.get('fullname') || formData.get('name') || 'Unknown');
                     const cvFile = formData.get('cv') as File;
 
                     let cvPublicUrl = null;
