@@ -193,15 +193,15 @@
         }
 
         nav.navbar.scrolled {
-            background-color: rgba(10, 37, 64, 0.85);
-            /* Semi-transparent navy */
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            border-bottom: 1px solid var(--accent-gold);
+            background-color: rgba(10, 37, 64, 0.6);
+            /* Reduced opacity for better background sync */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(201, 168, 96, 0.3);
             height: 70px;
             /* Shrink slightly on scroll */
-            backdrop-filter: blur(15px);
-            /* Increased blur for glassmorphism */
-            -webkit-backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px);
+            /* Increased blur for pronounced glass effect */
+            -webkit-backdrop-filter: blur(20px);
         }
 
         .nav-container {
