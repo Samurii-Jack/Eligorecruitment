@@ -3,6 +3,7 @@
     const SUPABASE_URL = "https://fjvtpaqopqrntbrxbqxg.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqdnRwYXFvcHFybnRicnhicXhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzMzU0ODIsImV4cCI6MjA4NjkxMTQ4Mn0.R5ghQQfwla8-UgBNDBeTMEuRXEmPwO4wdkMt6iT-6gI";
     const GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRl9nXfkHXdHiZ5OV-Kp8IMMNSp8-nYRUVkFf2Vu80FKaJzm97L7B-wD1USXaNvQnZHWKETjfLr7WeN/pub?gid=0&single=true&output=tsv";
+    const WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/26573964/uc7noa6/";
 
     console.log('%cAdmin Portal Script Loading...', 'color: #c9a860; font-weight: bold;');
 
@@ -341,6 +342,30 @@
         if (error) {
             alert("Error publishing job: " + error.message);
         } else {
+            console.log("Job saved to Supabase successfully.");
+
+            // --- WEBHOOK INTEGRATION (LinkedIn / Google Sheets) ---
+            if (WEBHOOK_URL) {
+                console.log("Triggering automation webhook...");
+                try {
+                    const webhookResponse = await fetch(WEBHOOK_URL, {
+                        method: 'POST',
+                        mode: 'no-cors', // Common for cross-origin webhooks
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            event: 'job_published',
+                            data: newJob
+                        })
+                    });
+                    console.log("Webhook triggered.");
+                } catch (webhookErr) {
+                    console.error("Webhook failed:", webhookErr);
+                    // We don't alert the user here as the job IS published in Supabase
+                }
+            } else {
+                console.warn("No WEBHOOK_URL configured. LinkedIn/Sheets update skipped.");
+            }
+
             alert("Job published successfully!");
             dom.postJobForm.reset();
             switchSection('jobs');
@@ -377,9 +402,18 @@
             const obj = {};
             headers.forEach((h, idx) => {
                 let val = (values[idx] || '').trim();
-                let key = h === 'requirements' ? 'responsibilities' : (h === 'salary range' ? 'salary' : h);
-                if (key === 'responsibilities') obj[key] = val.split(/[,\n|•]/).map(item => item.trim()).filter(item => item.length > 0);
-                else obj[key] = val;
+                let key = h === 'salary range' ? 'salary' : h;
+
+                // Better mapping for specific headers
+                if (h.includes('responsibility') || h.includes('responsibilities')) key = 'responsibilities';
+                if (h.includes('requirement')) key = 'requirements';
+                if (h === 'job title' || h === 'title') key = 'title';
+                if (h === 'job description' || h === 'description') key = 'description';
+                if (key === 'responsibilities' || key === 'requirements') {
+                    obj[key] = val.split(/\n/).map(item => item.trim()).filter(item => item.length > 0);
+                } else {
+                    obj[key] = val;
+                }
             });
             if (!obj.id) obj.id = 'sheet_' + i;
             result.push(obj);

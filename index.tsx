@@ -56,7 +56,28 @@ const DEFAULT_JOBS = [
         deadline: "2023-12-15",
         description: "Leading our core banking product transformation.",
         responsibilities: ["Define product vision", "Manage stakeholder expectations", "Lead sprint planning"],
+        requirements: ["5+ years of product management", "Experience in fintech", "Strong leadership skills"],
         salary: "£80,000 - £110,000"
+    },
+    {
+        id: "test_job",
+        title: "Test Job (Fix Verification)",
+        company: "Eligo Recruitment",
+        location: "Nairobi (Hybrid)",
+        type: "Full-time",
+        deadline: "2026-03-01",
+        description: "This is a test job to verify that Responsibilities and Requirements are now correctly separated and bullets are clean.",
+        responsibilities: [
+            "This is a responsibility with a comma, which should not break.",
+            "Another responsibility that spans multiple lines in the sheet.",
+            "Ensuring brand presence is leading and effective."
+        ],
+        requirements: [
+            "5 to 7 years of experience in Marketing.",
+            "Bachelor’s degree qualification in Marketing.",
+            "Profound respect for the individual, which is a value."
+        ],
+        salary: "Competitive"
     },
     {
         id: 2,
@@ -302,16 +323,18 @@ function parseTSV(tsvText: string) {
 
             // Map Sheet Headers to App Keys
             let key = header;
-            if (header === 'requirements' || header === 'responsibilities') key = 'responsibilities';
             if (header === 'salary range' || header === 'salary') key = 'salary';
 
             // Standardize keys
+            if (header.includes('responsibility') || header.includes('responsibilities')) key = 'responsibilities';
+            if (header.includes('requirement')) key = 'requirements';
             if (header === 'job title' || header === 'title') key = 'title';
             if (header === 'job description' || header === 'description') key = 'description';
 
-            // Handle list conversion for responsibilities
-            if (key === 'responsibilities' || key === 'qualifications') {
-                obj[key] = val.split(/[,\n|•]/).map(item => item.trim()).filter(item => item.length > 0);
+            // Handle list conversion for responsibilities and requirements
+            if (key === 'responsibilities' || key === 'requirements' || key === 'qualifications') {
+                // Split ONLY by newlines to keep commas in sentences
+                obj[key] = val.split(/\n/).map(item => item.trim()).filter(item => item.length > 0);
             } else {
                 obj[key] = val;
             }
@@ -377,16 +400,22 @@ function loadJobDetails(job) {
     const displayTitle = job.title || job.Title || job.job_title || job.JobTitle || 'Untitled Role';
     const displayCompany = job.company || job.Company || 'Confidential';
     const displayLocation = job.location || job.Location || 'Remote';
-    const displayDescription = job.description || job.Overview || job.Overview || job.Description || 'No description provided.';
-    const responsibilities = job.responsibilities || job.Responsibilities || job.requirements || job.Requirements || [];
+    const displayDescription = job.description || job.Overview || job.Description || 'No description provided.';
+    const responsibilities = job.responsibilities || job.Responsibilities || [];
+    const requirements = job.requirements || job.Requirements || [];
 
-    // Handle responsibilities being a string or array
-    let responsibilitiesList = '';
-    if (Array.isArray(responsibilities)) {
-        responsibilitiesList = responsibilities.map(i => `<li>${i}</li>`).join('');
-    } else if (typeof responsibilities === 'string') {
-        responsibilitiesList = responsibilities.split(/\n|•/).filter(i => i.trim().length > 0).map(i => `<li>${i}</li>`).join('');
-    }
+    // Helper to render lists
+    const renderList = (data) => {
+        if (Array.isArray(data)) {
+            return data.map(i => `<li>${i}</li>`).join('');
+        } else if (typeof data === 'string') {
+            return data.split(/\n/).filter(i => i.trim().length > 0).map(i => `<li>${i}</li>`).join('');
+        }
+        return '';
+    };
+
+    const responsibilitiesList = renderList(responsibilities);
+    const requirementsList = renderList(requirements);
 
     if (!dom.containers.details) return;
 
@@ -404,7 +433,10 @@ function loadJobDetails(job) {
         <p style="color: var(--text-gray); font-size: 0.95rem;">${displayDescription}</p>
         
         ${responsibilitiesList ? `<h4 style="margin: 1.5rem 0 0.5rem;">Key Responsibilities</h4>
-        <ul style="padding-left: 1.2rem; color: var(--text-gray); font-size: 0.95rem;">${responsibilitiesList}</ul>` : ''}
+        <ul style="padding-left: 1.2rem; margin-bottom: 1rem; color: var(--text-gray); font-size: 0.95rem;">${responsibilitiesList}</ul>` : ''}
+
+        ${requirementsList ? `<h4 style="margin: 1.5rem 0 0.5rem;">Requirements</h4>
+        <ul style="padding-left: 1.2rem; color: var(--text-gray); font-size: 0.95rem;">${requirementsList}</ul>` : ''}
         
         <div class="job-actions">
             <button class="btn btn-primary" id="btn-apply-now">Apply for this Job</button>
