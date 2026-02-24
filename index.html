@@ -193,12 +193,15 @@
         }
 
         nav.navbar.scrolled {
-            background-color: var(--primary-navy);
+            background-color: rgba(10, 37, 64, 0.85);
+            /* Semi-transparent navy */
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             border-bottom: 1px solid var(--accent-gold);
             height: 70px;
             /* Shrink slightly on scroll */
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(15px);
+            /* Increased blur for glassmorphism */
+            -webkit-backdrop-filter: blur(15px);
         }
 
         .nav-container {
