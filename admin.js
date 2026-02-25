@@ -328,12 +328,16 @@
         btn.disabled = true;
 
         const newJob = {
-            title: document.getElementById('job-title').value,
+            job_title: document.getElementById('job-title').value,
             company: document.getElementById('job-company').value,
             location: document.getElementById('job-location').value,
             type: document.getElementById('job-type').value,
+            deadline: document.getElementById('job-deadline').value,
             salary: document.getElementById('job-salary').value,
+            description: document.getElementById('job-desc').value,
             responsibilities: document.getElementById('job-resp').value.split('\n').filter(r => r.trim()),
+            requirements: document.getElementById('job-req').value.split('\n').filter(r => r.trim()),
+            email: document.getElementById('job-email').value,
             created_at: new Date().toISOString()
         };
 

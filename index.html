@@ -2613,16 +2613,6 @@
                             <label>Company Name *</label>
                             <input type="text" name="company" required class="job-input">
                         </div>
-                        <div class="job-group">
-                            <label>Industry</label>
-                            <select name="industry" class="job-select">
-                                <option value="">Select...</option>
-                                <option>Technology</option>
-                                <option>Finance</option>
-                                <option>Healthcare</option>
-                                <option>Logistics</option>
-                            </select>
-                        </div>
                     </div>
                 </div>
 
@@ -2635,19 +2625,11 @@
                         </div>
                         <div class="job-group">
                             <label>Type *</label>
-                            <select name="type" class="job-select">
-                                <option>Full-time</option>
-                                <option>Part-time</option>
-                                <option>Contract</option>
-                            </select>
+                            <input type="text" name="type" required class="job-input" placeholder="e.g. Full-time">
                         </div>
                         <div class="job-group">
                             <label>Location</label>
-                            <select name="location" class="job-select">
-                                <option>Remote</option>
-                                <option>On-site</option>
-                                <option>Hybrid</option>
-                            </select>
+                            <input type="text" name="location" class="job-input" placeholder="e.g. Remote, Nairobi">
                         </div>
                         <div class="job-group">
                             <label>Deadline *</label>
@@ -2661,14 +2643,18 @@
                 </div>
 
                 <div class="job-form-section">
-                    <h3 class="job-section-title">Description</h3>
+                    <h3 class="job-section-title">Description & Requirements</h3>
                     <div class="job-group" style="margin-bottom: 1rem;">
                         <label>Overview</label>
                         <textarea name="overview" rows="3" class="job-textarea"></textarea>
                     </div>
-                    <div class="job-group">
-                        <label>Responsibilities</label>
+                    <div class="job-group" style="margin-bottom: 1rem;">
+                        <label>Responsibilities (One per line)</label>
                         <textarea name="responsibilities" rows="3" class="job-textarea"></textarea>
+                    </div>
+                    <div class="job-group">
+                        <label>Requirements (One per line)</label>
+                        <textarea name="requirements" rows="3" class="job-textarea"></textarea>
                     </div>
                 </div>
 

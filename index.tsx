@@ -582,17 +582,19 @@ if (dom.forms.list) {
 
         const formData = prepareFormData(dom.forms.list);
 
-        // Create Local Object
+        // Create Local Object (Standardized with DB Schema)
         const newJob = {
             id: 'local_' + Date.now(),
-            title: formData.get('title'),
+            job_title: formData.get('title'),
             company: formData.get('company'),
             location: formData.get('location'),
             type: formData.get('type'),
             deadline: formData.get('deadline'),
             description: formData.get('overview'),
-            responsibilities: formData.get('responsibilities') ? (formData.get('responsibilities') as string).split('\n') : [],
-            salary: "Competitive"
+            responsibilities: formData.get('responsibilities') ? (formData.get('responsibilities') as string).split('\n').filter(r => r.trim()) : [],
+            requirements: formData.get('requirements') ? (formData.get('requirements') as string).split('\n').filter(r => r.trim()) : [],
+            email: formData.get('email'),
+            salary: formData.get('salary') || "Competitive"
         };
 
         try {

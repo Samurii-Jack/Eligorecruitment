@@ -154,34 +154,45 @@
                     <form id="new-job-form">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
                             <div class="form-group">
-                                <label>Job Title</label>
+                                <label>Job Title *</label>
                                 <input type="text" id="job-title" required>
                             </div>
                             <div class="form-group">
-                                <label>Company</label>
+                                <label>Company *</label>
                                 <input type="text" id="job-company" required>
                             </div>
                             <div class="form-group">
                                 <label>Location</label>
-                                <input type="text" id="job-location" required>
+                                <input type="text" id="job-location" placeholder="e.g. Remote, Nairobi">
                             </div>
                             <div class="form-group">
                                 <label>Type</label>
-                                <select id="job-type">
-                                    <option value="Full-time">Full-time</option>
-                                    <option value="Contract">Contract</option>
-                                    <option value="Remote">Remote</option>
-                                    <option value="On-site">On-site</option>
-                                </select>
+                                <input type="text" id="job-type" placeholder="e.g. Full-time, Project Base">
+                            </div>
+                            <div class="form-group">
+                                <label>Deadline *</label>
+                                <input type="date" id="job-deadline" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Salary Range</label>
+                                <input type="text" id="job-salary" placeholder="e.g. $2,000 - $3,000">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Salary Range</label>
-                            <input type="text" id="job-salary" placeholder="e.g. $2,000 - $3,000">
+                            <label>Description (Overview)</label>
+                            <textarea id="job-desc" rows="3"></textarea>
                         </div>
                         <div class="form-group">
                             <label>Responsibilities (One per line)</label>
                             <textarea id="job-resp" rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Requirements (One per line)</label>
+                            <textarea id="job-req" rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Email (Private) *</label>
+                            <input type="email" id="job-email" required placeholder="contact@company.com">
                         </div>
                         <button type="submit" class="btn-login" style="max-width: 200px;">Publish Job</button>
                     </form>
