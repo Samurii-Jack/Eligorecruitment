@@ -49,7 +49,7 @@ const TESTIMONIALS = [
 const DEFAULT_JOBS = [
     {
         id: 1,
-        title: "Senior Product Manager",
+        job_title: "Senior Product Manager",
         company: "TechFin Solutions",
         location: "London (Hybrid)",
         type: "Full-time",
@@ -61,7 +61,7 @@ const DEFAULT_JOBS = [
     },
     {
         id: "test_job",
-        title: "Test Job (Fix Verification)",
+        job_title: "Test Job (Fix Verification)",
         company: "Eligo Recruitment",
         location: "Nairobi (Hybrid)",
         type: "Full-time",
@@ -81,7 +81,7 @@ const DEFAULT_JOBS = [
     },
     {
         id: 2,
-        title: "Frontend Developer",
+        job_title: "Frontend Developer",
         company: "Creative Studio",
         location: "Remote",
         type: "Contract",
@@ -92,7 +92,7 @@ const DEFAULT_JOBS = [
     },
     {
         id: 3,
-        title: "HR Director",
+        job_title: "HR Director",
         company: "Global Logistics",
         location: "New York (On-site)",
         type: "Full-time",

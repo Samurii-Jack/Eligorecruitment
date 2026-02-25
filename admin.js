@@ -296,9 +296,8 @@
             }
 
             dom.jobsTable.innerHTML = combined.map((job, idx) => `
-        <tr>
             <td>
-                <div style="font-weight:600;">${job.title || job.job_title}</div>
+                <div style="font-weight:600;">${job.job_title || job.title}</div>
                 <div style="font-size:0.8rem; color:var(--text-light);">${job.company} • ${job.location}</div>
             </td>
             <td><span class="badge ${job.source === 'Supabase' ? 'badge-supabase' : 'badge-sheet'}">${job.source}</span></td>
@@ -411,7 +410,7 @@
                 // Better mapping for specific headers
                 if (h.includes('responsibility') || h.includes('responsibilities')) key = 'responsibilities';
                 if (h.includes('requirement')) key = 'requirements';
-                if (h === 'job title' || h === 'title') key = 'title';
+                if (h === 'job title' || h === 'title') key = 'job_title';
                 if (h === 'job description' || h === 'description') key = 'description';
                 if (key === 'responsibilities' || key === 'requirements') {
                     obj[key] = val.split(/\n/).map(item => item.trim()).filter(item => item.length > 0);
